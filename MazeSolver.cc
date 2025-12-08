@@ -48,6 +48,12 @@ void MazeSolver::checkIfJunction() {
   }
 }
 
+void MazeSolver::checkIfDeadEnd() {
+  lineSensors.readLineBlack(lineSensorValues);
+  if(lineSensorValues[0] > 500 || lineSensorValues[4] > 500) return;
+  if(lineSensorValues[2] < 500) state = U_TURN;
+}
+
 void MazeSolver::identifyJunction() {
 
   display.clear();
@@ -77,12 +83,17 @@ void MazeSolver::identifyJunction() {
     state = LINE_FOLLOWER;
 }
 
+bool first = true;
+
 void MazeSolver::turnLeft() {
+  if(!first) return;
   motors.setSpeeds(baseSpeed, baseSpeed);
-  delay(50);
+  delay(100);
   motors.setSpeeds(-baseSpeed, baseSpeed);
-  delay(50);
-  state = LINE_FOLLOWER;
+  delay(300);
+  motors.setSpeeds(0, 0);
+  first = false;
+  // state = LINE_FOLLOWER;
 }
 
 void MazeSolver::loop() {
@@ -97,6 +108,7 @@ void MazeSolver::loop() {
     turnLeft();
   }
   if (state == U_TURN) {
+    motors.setSpeeds(0, 0);
     // call u turn function
   }
   if (state == FINISHED) {

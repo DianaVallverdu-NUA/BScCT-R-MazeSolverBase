@@ -18,6 +18,8 @@ class MazeSolver {
 
   void checkIfJunction();
 
+  void checkIfDeadEnd();
+
   void identifyJunction();
 
   void turnLeft();
