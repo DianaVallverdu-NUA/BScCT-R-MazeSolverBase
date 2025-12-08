@@ -68,20 +68,6 @@ uint16_t derivative; // coefficient of the D term * 256
 
 MazeSolver mazeSolver;
 
-void selectHyper()
-{
-  motors.flipLeftMotor(true);
-  motors.flipRightMotor(true);
-  // Encoders are not used in this example.
-  // encoders.flipEncoders(true);
-  maxSpeed = 100;
-  minSpeed = 0;
-  baseSpeed = maxSpeed;
-  calibrationSpeed = 50;
-  proportional = 64; // P coefficient = 1/4
-  derivative = 256; // D coefficient = 1
-}
-
 void selectStandard()
 {
   maxSpeed = 200;
@@ -92,42 +78,7 @@ void selectStandard()
   derivative = 256; // D coefficient = 1
 }
 
-void selectTurtle()
-{
-  maxSpeed = 400;
-  minSpeed = 0;
-  baseSpeed = 400;
-  calibrationSpeed = 120;
-  proportional = 64; // P coefficient = 1/4
-  derivative = 256; // D coefficient = 1
-}
-
 PololuMenu<typeof(display)> menu;
-
-void selectEdition()
-{
-  display.clear();
-  display.print(F("Select"));
-  display.gotoXY(0,1);
-  display.print(F("edition"));
-  delay(1000);
-
-  static const PololuMenuItem items[] = {
-    { F("Standard"), selectStandard },
-    { F("Turtle"), selectTurtle },
-    { F("Hyper"), selectHyper },
-  };
-
-  menu.setItems(items, 3);
-  menu.setDisplay(display);
-  menu.setBuzzer(buzzer);
-  menu.setButtons(buttonA, buttonB, buttonC);
-
-  while(!menu.select());
-
-  display.gotoXY(0,1);
-  display.print("OK!  ...");
-}
 
 // Sets up special characters in the LCD so that we can display
 // bar graphs.
@@ -208,11 +159,11 @@ void setup()
   loadCustomCharacters();
 
   // Play a little welcome song
-  buzzer.play(">g32>>c32");
+  // buzzer.play(">g32>>c32");
 
   // To bypass the menu, replace this function with
   // selectHyper(), selectStandard(), or selectTurtle().
-  selectEdition();
+  selectStandard();
 
   // Wait for button B to be pressed and released.
   display.clear();
@@ -228,8 +179,8 @@ void setup()
   // Play music and wait for it to finish before we start driving.
   display.clear();
   display.print(F("Go!"));
-  buzzer.play("L16 cdegreg4");
-  while(buzzer.isPlaying());
+  // buzzer.play("L16 cdegreg4");
+  // while(buzzer.isPlaying());
 }
 
 void loop()

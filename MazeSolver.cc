@@ -30,6 +30,59 @@ void MazeSolver::followLine() {
   // update motor speed
   motors.setSpeeds(leftSpeed, rightSpeed);
 
+  //check if junction there's a junction and change state otherwise
+  checkIfJunction();
+}
+
+void MazeSolver::checkIfJunction() {
+  lineSensors.readLineBlack(lineSensorValues);
+
+  bool junction = false;
+
+  if(lineSensorValues[0] > 950) junction = true; // detect a line to the left
+  if(lineSensorValues[4] > 950) junction = true; // detect a line to the right
+  // any other case contains one of these types
+
+  if(junction) {
+    state = JUNCTION;
+  }
+}
+
+void MazeSolver::identifyJunction() {
+
+  display.clear();
+  display.print(state);
+
+  // set motor speed to zero
+  motors.setSpeeds(0, 0);
+
+  // if there's a left take it
+  if(lineSensorValues[0] > 950) {
+    state = TURN_LEFT;
+    return;
+  }
+
+  // move forward to identify other junctions
+  motors.setSpeeds(baseSpeed, baseSpeed);
+  delay(300);
+  motors.setSpeeds(0, 0);
+
+  // if can still sense -> FINISHED
+  if(lineSensorValues[0] && lineSensorValues[4] > 950) {
+    state = FINISHED;
+    return;
+  }
+
+  // any other case -> keep going
+    state = LINE_FOLLOWER;
+}
+
+void MazeSolver::turnLeft() {
+  motors.setSpeeds(baseSpeed, baseSpeed);
+  delay(50);
+  motors.setSpeeds(-baseSpeed, baseSpeed);
+  delay(50);
+  state = LINE_FOLLOWER;
 }
 
 void MazeSolver::loop() {
@@ -38,15 +91,18 @@ void MazeSolver::loop() {
   }
 
   if (state == JUNCTION) {
-    // call junciton identifier function
+    identifyJunction();
   }
   if (state == TURN_LEFT) {
-    // call left turn function
+    turnLeft();
   }
   if (state == U_TURN) {
     // call u turn function
   }
   if (state == FINISHED) {
+    motors.setSpeeds(0, 0);
+    display.clear();
+    display.print(state);
     return;
   }
 }
