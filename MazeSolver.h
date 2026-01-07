@@ -35,4 +35,10 @@ class MazeSolver {
     // constructor
     MazeSolver();
 
-    // function to be called at
+    // function to be called at every main loop
+    void loop();
+
+};
+
+#endif
+

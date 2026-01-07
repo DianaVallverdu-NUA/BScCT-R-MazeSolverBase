@@ -186,4 +186,5 @@ void setup()
 void loop()
 {
   display.clear();
-  maz
+  mazeSolver.loop();
+}
