@@ -6,8 +6,10 @@ enum State {
   LINE_FOLLOWER,
   JUNCTION,
   TURN_LEFT,
+  TURN_RIGHT,
   U_TURN,
-  FINISHED
+  FINISHED,
+  FAKE_END
 };
 
 class MazeSolver {
@@ -23,16 +25,14 @@ class MazeSolver {
   void identifyJunction();
 
   void turnLeft();
+
+  void turnRight();
+
+  void uTurn();
   
   public:
 
     // constructor
     MazeSolver();
 
-    // function to be called at every main loop
-    void loop();
-
-};
-
-#endif
-
+    // function to be called at
