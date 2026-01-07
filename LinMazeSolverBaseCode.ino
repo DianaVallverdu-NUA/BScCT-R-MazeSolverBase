@@ -18,7 +18,6 @@ using namespace Pololu3piPlus32U4;
 // LCD display;
 OLED display;
 
-Buzzer buzzer;
 LineSensors lineSensors;
 Motors motors;
 ButtonA buttonA;
@@ -158,11 +157,7 @@ void setup()
 
   loadCustomCharacters();
 
-  // Play a little welcome song
-  // buzzer.play(">g32>>c32");
-
   // To bypass the menu, replace this function with
-  // selectHyper(), selectStandard(), or selectTurtle().
   selectStandard();
 
   // Wait for button B to be pressed and released.
@@ -179,8 +174,6 @@ void setup()
   // Play music and wait for it to finish before we start driving.
   display.clear();
   display.print(F("Go!"));
-  // buzzer.play("L16 cdegreg4");
-  // while(buzzer.isPlaying());
 }
 
 void loop()

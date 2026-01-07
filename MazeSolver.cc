@@ -31,111 +31,6 @@ void MazeSolver::followLine() {
   motors.setSpeeds(leftSpeed, rightSpeed);
 }
 
-void MazeSolver::checkIfJunction() {
-  lineSensors.readLineBlack(lineSensorValues);
-
-  bool junction = false;
-
-  if (lineSensorValues[0] > 950) junction = true;  // detect a line to the left
-  if (lineSensorValues[1] > 950) junction = true;  // detect a line to the left
-  if (lineSensorValues[3] > 950) junction = true;  // detect a line to the right
-  if (lineSensorValues[4] > 950) junction = true;  // detect a line to the right
-  // any other case contains one of these types
-
-  if (junction) {
-    state = JUNCTION;
-    motors.setSpeeds(0, 0);
-  }
-}
-
-void MazeSolver::checkIfDeadEnd() {
-  lineSensors.readLineBlack(lineSensorValues);
-  if (lineSensorValues[2] < 500) state = U_TURN;
-}
-
-void MazeSolver::identifyJunction() {
-
-  display.clear();
-
-  delay(500);
-
-
-
-  // move forward to identify other junctions
-  motors.setSpeeds(baseSpeed, baseSpeed);
-  delay(250);
-  motors.setSpeeds(0, 0);
-  lineSensors.readLineBlack(lineSensorValues);
-
-
-
-  // if can sense everywhere -> FINISHED
-  if (lineSensorValues[0] > 950 && lineSensorValues[1] > 950 && lineSensorValues[2] > 950 && lineSensorValues[3] > 950 && lineSensorValues[4] > 950) {
-    state = FINISHED;
-    return;
-  }
-
-
-  // if there's a left take it
-  if (lineSensorValues[0] > 750) {
-    state = TURN_LEFT;
-    return;
-  }
-
-  if (lineSensorValues[2] > 750) {
-    motors.setSpeeds(baseSpeed, baseSpeed);
-    delay(250);
-
-    state = LINE_FOLLOWER;
-    return;
-  }
-
-  // if there's a left take it
-  if (lineSensorValues[4] > 750) {
-    state = TURN_RIGHT;
-    return;
-  }
-
-
-  // any other case -> keep going
-  state = LINE_FOLLOWER;
-}
-
-
-
-bool first = true;
-
-void MazeSolver::turnLeft() {
-
-  motors.setSpeeds(baseSpeed, baseSpeed);
-  delay(250);
-  motors.setSpeeds(0, 0);
-
-  motors.setSpeeds(-baseSpeed, baseSpeed);
-  delay(730);
-  motors.setSpeeds(0, 0);
-  state = LINE_FOLLOWER;
-}
-
-void MazeSolver::turnRight() {
-
-  motors.setSpeeds(baseSpeed, baseSpeed);
-  delay(250);
-  motors.setSpeeds(0, 0);
-
-  motors.setSpeeds(baseSpeed, -baseSpeed);
-  delay(730);
-  motors.setSpeeds(0, 0);
-  state = LINE_FOLLOWER;
-}
-
-void MazeSolver::uTurn() {
-  motors.setSpeeds(-baseSpeed, baseSpeed);
-  delay(1450);
-  motors.setSpeeds(0, 0);
-  state = LINE_FOLLOWER;
-}
-
 void MazeSolver::loop() {
   // display.clear();
   display.gotoXY(0, 0);
@@ -149,21 +44,28 @@ void MazeSolver::loop() {
   }
 
   if (state == JUNCTION) {
-    identifyJunction();
+    // call junciton identifier function
+    motors.setSpeeds(0, 0);
+    display.clear();
+    display.print('J');
   }
 
   if (state == TURN_LEFT) {
-    turnLeft();
-  }
-
-  if (state == TURN_RIGHT) {
-    turnRight();
+    // call left turn function
+    motors.setSpeeds(0, 0);
+    display.clear();
+    display.print('L');
   }
   if (state == U_TURN) {
-    uTurn();
+    // call u turn function
+    motors.setSpeeds(0, 0);
+    display.clear();
+    display.print('U');
   }
   if (state == FINISHED) {
     motors.setSpeeds(0, 0);
+    display.clear();
+    display.print('F');
     return;
   }
 
