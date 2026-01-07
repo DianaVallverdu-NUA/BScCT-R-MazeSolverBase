@@ -32,8 +32,15 @@ void MazeSolver::followLine() {
 }
 
 void MazeSolver::loop() {
+  // display.clear();
+  display.gotoXY(0, 0);
+  display.print(state);
+
   if (state == LINE_FOLLOWER) {
     followLine();
+    //check if junction there's a junction and change state otherwise
+    checkIfJunction();
+    checkIfDeadEnd();
   }
 
   if (state == JUNCTION) {
@@ -42,6 +49,7 @@ void MazeSolver::loop() {
     display.clear();
     display.print('J');
   }
+
   if (state == TURN_LEFT) {
     // call left turn function
     motors.setSpeeds(0, 0);
@@ -59,5 +67,27 @@ void MazeSolver::loop() {
     display.clear();
     display.print('F');
     return;
+  }
+
+  if (state == FAKE_END) {
+    display.clear();
+
+    while (!buttonB.getSingleDebouncedPress()) {
+      uint16_t position = lineSensors.readLineBlack(lineSensorValues);
+
+      display.gotoXY(0, 0);
+      display.print(position);
+      display.print("    ");
+      display.gotoXY(0, 1);
+      for (uint8_t i = 0; i < NUM_SENSORS; i++) {
+        uint8_t barHeight = map(lineSensorValues[i], 0, 1000, 0, 8);
+
+        if (barHeight > 8) { barHeight = 8; }
+        const char barChars[] = { ' ', 0, 1, 2, 3, 4, 5, 6, (char)255 };
+        display.print(barChars[barHeight]);
+      }
+
+      delay(50);
+    }
   }
 }
