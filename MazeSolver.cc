@@ -6,6 +6,28 @@ using namespace Pololu3piPlus32U4;
 
 #include "MazeSolver.h"
 #include "Shared.h"
+
+void MazeSolver::addDecision(Decisions d) {
+  if (pathLength < MAX_PATH) {
+    path[pathLength] = d;
+    pathLength++;
+  }
+    displayPath();
+}
+
+void MazeSolver::displayPath() {
+  display.clear();
+  display.gotoXY(0, 0);
+  for(int i = 0; i < 8; i++) {
+    display.print(path[i]);
+  }
+  display.gotoXY(0, 1);
+  for(int i = 8; i < 16; i++) {
+    display.print(path[i]);
+  }
+}
+
+
 MazeSolver::MazeSolver() {
   state = LINE_FOLLOWER;
 }
@@ -50,17 +72,15 @@ void MazeSolver::checkIfJunction() {
 
 void MazeSolver::checkIfDeadEnd() {
   lineSensors.readLineBlack(lineSensorValues);
-  if (lineSensorValues[2] < 500) state = U_TURN;
+  if (lineSensorValues[2] < 500) {
+    state = U_TURN;
+    addDecision(BACK);
+  }
 }
 
 void MazeSolver::identifyJunction() {
-
-  display.clear();
-
+  
   delay(500);
-
-
-
   // move forward to identify other junctions
   motors.setSpeeds(baseSpeed, baseSpeed);
   delay(250);
@@ -79,6 +99,8 @@ void MazeSolver::identifyJunction() {
   // if there's a left take it
   if (lineSensorValues[0] > 750) {
     state = TURN_LEFT;
+    if(lineSensorValues[2] > 750 || lineSensorValues[4] > 750)
+      addDecision(LEFT);
     return;
   }
 
@@ -87,6 +109,7 @@ void MazeSolver::identifyJunction() {
     delay(100);
 
     state = LINE_FOLLOWER;
+    addDecision(FORWARD);
     return;
   }
 
@@ -137,9 +160,6 @@ void MazeSolver::uTurn() {
 }
 
 void MazeSolver::loop() {
-  // display.clear();
-  display.gotoXY(0, 0);
-  display.print(state);
 
   if (state == LINE_FOLLOWER) {
     followLine();
@@ -168,7 +188,7 @@ void MazeSolver::loop() {
   }
 
   if (state == FAKE_END) {
-    display.clear();
+
 
     while (!buttonB.getSingleDebouncedPress()) {
       uint16_t position = lineSensors.readLineBlack(lineSensorValues);
