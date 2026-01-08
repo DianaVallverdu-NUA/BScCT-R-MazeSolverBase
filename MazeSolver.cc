@@ -8,22 +8,70 @@ using namespace Pololu3piPlus32U4;
 #include "Shared.h"
 
 void MazeSolver::addDecision(Decisions d) {
-  if (pathLength < MAX_PATH) {
-    path[pathLength] = d;
-    pathLength++;
+
+  if (pathLength >= MAX_PATH) return;
+
+  if (pathLength > 1)
+    if (path[pathLength - 1] == BACK) {
+      if (path[pathLength - 2] == LEFT) {
+        if (d == FORWARD) {
+          d = RIGHT;
+        }
+        if (d == LEFT) {
+          d = FORWARD;
+        }
+      }
+      if(path[pathLength -2] == RIGHT) {
+        if(d == LEFT) {
+          d = BACK;
+        }
+      }
+
+      if(path[pathLength -2] == FORWARD) {
+        if(d == FORWARD) {
+          d = BACK;
+        }
+        if(d == LEFT) {
+          d = RIGHT;
+        }
+      }
+      // state = FAKE_END;
+      path[pathLength - 1] = NONE;
+      path[pathLength - 2] = NONE;
+      pathLength -= 2;
+    }
+
+  path[pathLength] = d;
+
+
+  pathLength++;
+
+  displayPath();
+}
+
+char decisionToChar(Decisions d) {
+  switch (d) {
+    case FORWARD:
+      return 'F';
+    case LEFT:
+      return 'L';
+    case RIGHT:
+      return 'R';
+    case BACK:
+      return 'B';
   }
-    displayPath();
+  return ' ';
 }
 
 void MazeSolver::displayPath() {
   display.clear();
   display.gotoXY(0, 0);
-  for(int i = 0; i < 8; i++) {
-    display.print(path[i]);
+  for (int i = 0; i < 8; i++) {
+    display.print(decisionToChar(path[i]));
   }
   display.gotoXY(0, 1);
-  for(int i = 8; i < 16; i++) {
-    display.print(path[i]);
+  for (int i = 8; i < 16; i++) {
+    display.print(decisionToChar(path[i]));
   }
 }
 
@@ -79,7 +127,7 @@ void MazeSolver::checkIfDeadEnd() {
 }
 
 void MazeSolver::identifyJunction() {
-  
+
   delay(500);
   // move forward to identify other junctions
   motors.setSpeeds(baseSpeed, baseSpeed);
@@ -99,7 +147,7 @@ void MazeSolver::identifyJunction() {
   // if there's a left take it
   if (lineSensorValues[0] > 750) {
     state = TURN_LEFT;
-    if(lineSensorValues[2] > 750 || lineSensorValues[4] > 750)
+    if (lineSensorValues[2] > 750 || lineSensorValues[4] > 750)
       addDecision(LEFT);
     return;
   }

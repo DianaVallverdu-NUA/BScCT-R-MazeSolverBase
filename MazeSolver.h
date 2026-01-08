@@ -12,6 +12,7 @@ enum State {
 };
 
 enum Decisions {
+  NONE,
   FORWARD, 
   LEFT,
   RIGHT, 
