@@ -2,13 +2,9 @@
 #define CONSTANTS_H
 
 #include <Pololu3piPlus32U4.h>
-#include <PololuMenu.h>
 
 using namespace Pololu3piPlus32U4;
 
-extern OLED display;
-
-extern Buzzer buzzer;
 extern LineSensors lineSensors;
 extern Motors motors;
 extern ButtonA buttonA;
@@ -29,10 +25,6 @@ extern uint16_t calibrationSpeed;
 
 extern uint16_t proportional;  // coefficient of the P term * 256
 extern uint16_t derivative;    // coefficient of the D term * 256
-
-// are we solving or are we following solution
-enum Mode { SOLVING, FOLLOWING };
-extern Mode mode;
 
 // decisions that can be taken on a junction
 enum Decision {

@@ -1,7 +1,6 @@
-#ifndef MAZE_H
-#define MAZE_H
+#ifndef MAZEROBOT_H
+#define MAZEROBOT_H
 #include "Shared.h"
-#include "Display/Display.h"
 
 // enum creates a new type which can be used like any type
 enum State {
@@ -24,13 +23,6 @@ class MazeSolver {
   protected:
   State state; // value of type state
 
-  // path to be followed to solve the maze
-  static const int MAX_PATH = 50;
-  Path path;
-  int pathLength = 0;
-
-  void addDecision(Decision d);
-
   void displayPath();
 
   void followLine();
@@ -38,8 +30,6 @@ class MazeSolver {
   void checkIfJunction();
 
   void checkIfDeadEnd();
-
-  void identifyJunction();
 
   void turnLeft();
 
@@ -51,11 +41,6 @@ class MazeSolver {
 
     // constructor
     MazeSolver();
-
-    
-    const Path& getPath();
-
-    bool finished();
 
     // function to be called at every main loop
     void loop();

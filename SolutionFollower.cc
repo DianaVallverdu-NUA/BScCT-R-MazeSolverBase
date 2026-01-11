@@ -34,7 +34,7 @@ void SolutionFollower::identifyJunction() {
 
 
     // case -> it's a real junction
-    Decisions d = path.steps[currentD];
+    Decision d = path.steps[currentD];
 
     switch(d) {
       case RIGHT : {
