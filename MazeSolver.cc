@@ -6,7 +6,7 @@ using namespace Pololu3piPlus32U4;
 
 #include "MazeSolver.h"
 
-void MazeSolver::addDecision(Decisions d) {
+void MazeSolver::addDecision(Decision d) {
 
   if (path.length >= MAX_PATH) return;
 
@@ -48,7 +48,7 @@ void MazeSolver::addDecision(Decisions d) {
   displayPath();
 }
 
-char decisionToChar(Decisions d) {
+char decisionToChar(Decision d) {
   switch (d) {
     case FORWARD:
       return 'F';

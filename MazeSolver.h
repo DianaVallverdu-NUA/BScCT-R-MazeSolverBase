@@ -15,7 +15,7 @@ enum State {
 
 struct Path {
     static const uint8_t MAX_LEN = 64;
-    Decisions steps[MAX_LEN];
+    Decision steps[MAX_LEN];
     uint8_t length = 0;
 };
 
@@ -28,7 +28,7 @@ class MazeSolver {
   Path path;
   int pathLength = 0;
 
-  void addDecision(Decisions d);
+  void addDecision(Decision d);
 
   void displayPath();
 

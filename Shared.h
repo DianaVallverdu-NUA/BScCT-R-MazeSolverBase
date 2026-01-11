@@ -35,7 +35,7 @@ enum Mode { SOLVING, FOLLOWING };
 extern Mode mode;
 
 // decisions that can be taken on a junction
-enum Decisions {
+enum Decision {
   NONE,
   FORWARD,
   LEFT,
