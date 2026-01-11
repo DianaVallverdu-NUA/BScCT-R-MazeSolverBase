@@ -13,8 +13,10 @@ courses or with different motors. */
 #include "Display/Display.h"
 #include "App/Mode.h"
 #include "App/Buttons.h"
+#include "LineFollower/LineFollower.h"
 
 using namespace Pololu3piPlus32U4;
+
 
 LineSensors lineSensors;
 Motors motors;
@@ -54,52 +56,15 @@ Mode mode = Mode::SOLVING;
 MazeSolver mazeSolver;
 SolutionFollower solutionFollower;
 
-void selectStandard()
-{
-  maxSpeed = 100;
-  minSpeed = -100;
-  baseSpeed = maxSpeed;
-  calibrationSpeed = 60;
-  proportional = 64; // P coefficient = 1/4
-  derivative = 256; // D coefficient = 1
-}
-
-void calibrateSensors()
-{
-  display.clear();
-
-  // Wait 1 second and then begin automatic sensor calibration
-  // by rotating in place to sweep the sensors over the line
-  delay(1000);
-  for(uint16_t i = 0; i < 80; i++)
-  {
-    if (i > 20 && i <= 60)
-    {
-      motors.setSpeeds(-(int16_t)calibrationSpeed, calibrationSpeed);
-    }
-    else
-    {
-      motors.setSpeeds(calibrationSpeed, -(int16_t)calibrationSpeed);
-    }
-
-    lineSensors.calibrate();
-  }
-  motors.setSpeeds(0, 0);
-}
+LineFollower lineFollower;
 
 void setup()
 {
-
-  selectStandard();
-
-  // Wait for button B to be pressed and released.
-  display.clear();
-  display.print(F("Press B"));
-  display.gotoXY(0, 1);
-  display.print(F("to calib"));
+  // calibrate
+  display.askForCalibration();
   while(!buttonB.getSingleDebouncedPress());
 
-  calibrateSensors();
+  lineFollower.calibrateSensors();
 
   display.showReadings();
 

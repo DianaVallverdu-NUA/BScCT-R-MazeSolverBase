@@ -1,13 +1,20 @@
 #include "Display/Display.h"
 #include "App/Buttons.h"
 
-
 DisplayManager::DisplayManager()
 {
   // Change next line to this if you are using the older 3pi+
   // with a black and green LCD display:
   // LCD display;
   loadCustomCharacters();
+}
+
+
+void DisplayManager::askForCalibration() {
+  clear();
+  print(F("Press B"));
+  gotoXY(0, 1);
+  print(F("to calib"));
 }
 
 // Sets up special characters in the LCD so that we can display

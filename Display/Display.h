@@ -15,6 +15,8 @@ class DisplayManager : public OLED {
     void printBar(uint8_t height);
 
     void showReadings();
+
+    void askForCalibration();
 };
 
 extern DisplayManager display;
