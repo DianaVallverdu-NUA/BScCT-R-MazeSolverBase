@@ -1,5 +1,7 @@
 #ifndef MAZE_H
 #define MAZE_H
+#include "Shared.h"
+
 // enum creates a new type which can be used like any type
 enum State {
   LINE_FOLLOWER,
@@ -11,21 +13,19 @@ enum State {
   FAKE_END
 };
 
-enum Decisions {
-  NONE,
-  FORWARD, 
-  LEFT,
-  RIGHT, 
-  BACK
+struct Path {
+    static const uint8_t MAX_LEN = 64;
+    Decisions steps[MAX_LEN];
+    uint8_t length = 0;
 };
 
 class MazeSolver {
-  private:
+  protected:
   State state; // value of type state
 
   // path to be followed to solve the maze
   static const int MAX_PATH = 50;
-  Decisions path[MAX_PATH] = {};
+  Path path;
   int pathLength = 0;
 
   void addDecision(Decisions d);
@@ -50,6 +50,11 @@ class MazeSolver {
 
     // constructor
     MazeSolver();
+
+    
+    const Path& getPath();
+
+    bool finished();
 
     // function to be called at every main loop
     void loop();

@@ -5,15 +5,14 @@
 using namespace Pololu3piPlus32U4;
 
 #include "MazeSolver.h"
-#include "Shared.h"
 
 void MazeSolver::addDecision(Decisions d) {
 
-  if (pathLength >= MAX_PATH) return;
+  if (path.length >= MAX_PATH) return;
 
-  if (pathLength > 1)
-    if (path[pathLength - 1] == BACK) {
-      if (path[pathLength - 2] == LEFT) {
+  if (path.length > 1)
+    if (path.steps[path.length - 1] == BACK) {
+      if (path.steps[path.length - 2] == LEFT) {
         if (d == FORWARD) {
           d = RIGHT;
         }
@@ -21,13 +20,13 @@ void MazeSolver::addDecision(Decisions d) {
           d = FORWARD;
         }
       }
-      if(path[pathLength -2] == RIGHT) {
+      if(path.steps[path.length -2] == RIGHT) {
         if(d == LEFT) {
           d = BACK;
         }
       }
 
-      if(path[pathLength -2] == FORWARD) {
+      if(path.steps[path.length -2] == FORWARD) {
         if(d == FORWARD) {
           d = BACK;
         }
@@ -36,15 +35,15 @@ void MazeSolver::addDecision(Decisions d) {
         }
       }
       // state = FAKE_END;
-      path[pathLength - 1] = NONE;
-      path[pathLength - 2] = NONE;
-      pathLength -= 2;
+      path.steps[path.length - 1] = NONE;
+      path.steps[path.length - 2] = NONE;
+      path.length -= 2;
     }
 
-  path[pathLength] = d;
+  path.steps[path.length] = d;
 
 
-  pathLength++;
+  path.length++;
 
   displayPath();
 }
@@ -67,17 +66,27 @@ void MazeSolver::displayPath() {
   display.clear();
   display.gotoXY(0, 0);
   for (int i = 0; i < 8; i++) {
-    display.print(decisionToChar(path[i]));
+    display.print(decisionToChar(path.steps[i]));
   }
   display.gotoXY(0, 1);
   for (int i = 8; i < 16; i++) {
-    display.print(decisionToChar(path[i]));
+    display.print(decisionToChar(path.steps[i]));
   }
 }
 
-
 MazeSolver::MazeSolver() {
   state = LINE_FOLLOWER;
+}
+
+const Path& MazeSolver::getPath() {
+    return path;
+}
+
+bool MazeSolver::finished() {
+  if(state == FINISHED) {
+    return true;
+  }
+  return false;
 }
 
 void MazeSolver::followLine() {
@@ -173,9 +182,6 @@ void MazeSolver::identifyJunction() {
 }
 
 
-
-bool first = true;
-
 void MazeSolver::turnLeft() {
 
   motors.setSpeeds(baseSpeed, baseSpeed);
@@ -232,7 +238,7 @@ void MazeSolver::loop() {
   }
   if (state == FINISHED) {
     motors.setSpeeds(0, 0);
-    return;
+    while(!buttonB.getSingleDebouncedPress());
   }
 
   if (state == FAKE_END) {
