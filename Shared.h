@@ -7,9 +7,6 @@ using namespace Pololu3piPlus32U4;
 
 extern LineSensors lineSensors;
 extern Motors motors;
-extern ButtonA buttonA;
-extern ButtonB buttonB;
-extern ButtonC buttonC;
 
 extern int16_t lastError;
 

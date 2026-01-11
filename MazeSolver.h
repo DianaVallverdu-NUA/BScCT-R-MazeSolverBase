@@ -2,6 +2,7 @@
 #define MAZE_H
 #include "Shared.h"
 #include "Display/Display.h"
+#include "App/Buttons.h"
 
 // enum creates a new type which can be used like any type
 enum State {

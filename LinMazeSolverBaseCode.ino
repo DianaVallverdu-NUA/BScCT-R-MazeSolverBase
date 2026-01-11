@@ -12,14 +12,14 @@ courses or with different motors. */
 #include "SolutionFollower.h"
 #include "Display/Display.h"
 #include "App/Mode.h"
+#include "App/Buttons.h"
 
 using namespace Pololu3piPlus32U4;
 
 LineSensors lineSensors;
 Motors motors;
-ButtonA buttonA;
+
 ButtonB buttonB;
-ButtonC buttonC;
 
 int16_t lastError = 0;
 
