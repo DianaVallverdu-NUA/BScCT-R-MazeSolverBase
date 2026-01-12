@@ -6,72 +6,6 @@ using namespace Pololu3piPlus32U4;
 #include "MazeSolver.h"
 #include "Detector/Detector.h"
 
-void MazeSolver::addDecision(DECISION d)
-{
-
-  if (path.length >= path.MAX_LEN)
-    return;
-
-  if (path.length > 1)
-    if (path.steps[path.length - 1] == DECISION::BACK)
-    {
-      if (path.steps[path.length - 2] == DECISION::LEFT)
-      {
-        if (d == DECISION::FORWARD)
-        {
-          d = DECISION::RIGHT;
-        }
-        if (d == DECISION::LEFT)
-        {
-          d = DECISION::FORWARD;
-        }
-      }
-      if (path.steps[path.length - 2] == DECISION::RIGHT)
-      {
-        if (d == DECISION::LEFT)
-        {
-          d = DECISION::BACK;
-        }
-      }
-
-      if (path.steps[path.length - 2] == DECISION::FORWARD)
-      {
-        if (d == DECISION::FORWARD)
-        {
-          d = DECISION::BACK;
-        }
-        if (d == DECISION::LEFT)
-        {
-          d = DECISION::RIGHT;
-        }
-      }
-      path.steps[path.length - 1] = DECISION::NONE;
-      path.steps[path.length - 2] = DECISION::NONE;
-      path.length -= 2;
-    }
-
-  path.steps[path.length] = d;
-
-  path.length++;
-
-  displayPath();
-}
-
-void MazeSolver::displayPath()
-{
-  display.clear();
-  display.gotoXY(0, 0);
-  for (int i = 0; i < 8; i++)
-  {
-    display.print(decisionToChar(path.steps[i]));
-  }
-  display.gotoXY(0, 1);
-  for (int i = 8; i < 16; i++)
-  {
-    display.print(decisionToChar(path.steps[i]));
-  }
-}
-
 MazeSolver::MazeSolver()
 {
   state = ROBOT_STATE::FOLLOWING_LINE;
@@ -106,8 +40,10 @@ void MazeSolver::identifyJunction()
     state = ROBOT_STATE::TURNING_LEFT;
 
     // only add as decision if it's not a simple left
-    if (!Detector::isSimpleLeft())
-      addDecision(DECISION::LEFT);
+    if (!Detector::isSimpleLeft()){
+      path.addDecision(DECISION::LEFT);
+      path.display();
+    }
     return;
   }
 
@@ -118,7 +54,8 @@ void MazeSolver::identifyJunction()
 
     // change state & add decision
     state = ROBOT_STATE::FOLLOWING_LINE;
-    addDecision(DECISION::FORWARD);
+    path.addDecision(DECISION::FORWARD);
+    path.display();
     return;
   }
 
@@ -173,7 +110,8 @@ void MazeSolver::checkForStateChange()
   if (Detector::reachedDeadEnd())
   {
     state = ROBOT_STATE::TURNING_BACK;
-    addDecision(DECISION::BACK);
+    path.addDecision(DECISION::BACK);
+    path.display();
     return;
   }
 }
