@@ -5,37 +5,37 @@ using namespace Pololu3piPlus32U4;
 
 #include "MazeSolver.h"
 
-void MazeSolver::addDecision(Decision d) {
+void MazeSolver::addDecision(DECISION d) {
 
   if (path.length >= path.MAX_LEN) return;
 
   if (path.length > 1)
-    if (path.steps[path.length - 1] == BACK) {
-      if (path.steps[path.length - 2] == LEFT) {
-        if (d == FORWARD) {
-          d = RIGHT;
+    if (path.steps[path.length - 1] == DECISION::BACK) {
+      if (path.steps[path.length - 2] == DECISION::LEFT) {
+        if (d == DECISION::FORWARD) {
+          d = DECISION::RIGHT;
         }
-        if (d == LEFT) {
-          d = FORWARD;
+        if (d == DECISION::LEFT) {
+          d = DECISION::FORWARD;
         }
       }
-      if(path.steps[path.length -2] == RIGHT) {
-        if(d == LEFT) {
-          d = BACK;
+      if(path.steps[path.length -2] == DECISION::RIGHT) {
+        if(d == DECISION::LEFT) {
+          d = DECISION::BACK;
         }
       }
 
-      if(path.steps[path.length -2] == FORWARD) {
-        if(d == FORWARD) {
-          d = BACK;
+      if(path.steps[path.length -2] == DECISION::FORWARD) {
+        if(d == DECISION::FORWARD) {
+          d = DECISION::BACK;
         }
-        if(d == LEFT) {
-          d = RIGHT;
+        if(d == DECISION::LEFT) {
+          d = DECISION::RIGHT;
         }
       }
       // state = FAKE_END;
-      path.steps[path.length - 1] = NONE;
-      path.steps[path.length - 2] = NONE;
+      path.steps[path.length - 1] = DECISION::NONE;
+      path.steps[path.length - 2] = DECISION::NONE;
       path.length -= 2;
     }
 
@@ -47,15 +47,15 @@ void MazeSolver::addDecision(Decision d) {
   displayPath();
 }
 
-char decisionToChar(Decision d) {
+char decisionToChar(DECISION d) {
   switch (d) {
-    case FORWARD:
+    case DECISION::FORWARD:
       return 'F';
-    case LEFT:
+    case DECISION::LEFT:
       return 'L';
-    case RIGHT:
+    case DECISION::RIGHT:
       return 'R';
-    case BACK:
+    case DECISION::BACK:
       return 'B';
   }
   return ' ';
@@ -125,7 +125,7 @@ void MazeSolver::checkIfDeadEnd() {
   lineSensors.readLineBlack(lineSensorValues);
   if (lineSensorValues[2] < 500) {
     state = ROBOT_STATE::TURNING_BACK;
-    addDecision(BACK);
+    addDecision(DECISION::BACK);
   }
 }
 
@@ -151,7 +151,7 @@ void MazeSolver::identifyJunction() {
   if (lineSensorValues[0] > 750) {
     state = ROBOT_STATE::TURNING_LEFT;
     if (lineSensorValues[2] > 750 || lineSensorValues[4] > 750)
-      addDecision(LEFT);
+      addDecision(DECISION::LEFT);
     return;
   }
 
@@ -160,7 +160,7 @@ void MazeSolver::identifyJunction() {
     delay(100);
 
     state = ROBOT_STATE::FOLLOWING_LINE;
-    addDecision(FORWARD);
+    addDecision(DECISION::FORWARD);
     return;
   }
 

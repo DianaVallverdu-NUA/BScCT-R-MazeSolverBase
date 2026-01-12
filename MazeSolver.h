@@ -4,11 +4,12 @@
 #include "Display/Display.h"
 #include "App/Buttons.h"
 #include "Robot/State.h"
+#include "Robot/Decision.h"
 
 struct Path
 {
   static const uint8_t MAX_LEN = 64;
-  Decision steps[MAX_LEN];
+  DECISION steps[MAX_LEN];
   uint8_t length = 0;
 };
 
@@ -16,7 +17,7 @@ class MazeSolver
 {
 
 private:
-  void addDecision(Decision d);
+  void addDecision(DECISION d);
 
   void displayPath();
 

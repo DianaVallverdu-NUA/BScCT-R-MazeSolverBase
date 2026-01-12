@@ -55,20 +55,20 @@ void SolutionFollower::identifyJunction() {
   }
 
   // it is a junction
-  Decision d = path.steps[count];
+  DECISION d = path.steps[count];
 
   switch (d) {
-    case LEFT:
+    case DECISION::LEFT:
       {
         state = ROBOT_STATE::TURNING_LEFT;
         break;
       }
-    case RIGHT:
+    case DECISION::RIGHT:
       {
         state = ROBOT_STATE::TURNING_RIGHT;
         break;
       }
-    case FORWARD:
+    case DECISION::FORWARD:
       {
         motors.setSpeeds(baseSpeed, baseSpeed);
         delay(100);
