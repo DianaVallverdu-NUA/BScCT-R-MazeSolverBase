@@ -3,24 +3,15 @@
 
 #include "MazeSolver.h"
 
-class SolutionFollower {
+class SolutionFollower : public MazeSolver {
   private:
-  State state; // value of type state
   int count = 0;
 
-  void displayPath();
-
-  void followLine();
-
   // decide whethere there is a junction (including simple turns)
-  void checkIfJunction();
+  void checkIfJunction() override;
 
   // I am in a junction -> identify the type of junction
-  void identifyJunction();
-
-  void turnLeft();
-
-  void turnRight();
+  void identifyJunction() override;
 
   public: 
 
@@ -28,7 +19,7 @@ class SolutionFollower {
     int totalLength;
 
   // function to be called at every main loop
-    void loop();
+    void loop() override;
 };
 
 #endif

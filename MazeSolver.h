@@ -22,23 +22,23 @@ struct Path {
 };
 
 class MazeSolver {
+
   private:
-  State state; // value of type state
-
-
   void addDecision(Decision d);
-
   void displayPath();
+
+  protected:
+  State state; // value of type state
 
   void followLine();
 
   // check whether there is a junction
-  void checkIfJunction();
+  virtual void checkIfJunction();
 
   void checkIfDeadEnd();
 
   // I am in a junction -> identify the type of junction
-  void identifyJunction();
+  virtual void identifyJunction();
 
   void turnLeft();
 
@@ -62,7 +62,7 @@ class MazeSolver {
     bool finished();
 
     // function to be called at every main loop
-    void loop();
+    virtual void loop();
 
 };
 
