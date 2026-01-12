@@ -3,18 +3,7 @@
 #include "Shared.h"
 #include "Display/Display.h"
 #include "App/Buttons.h"
-
-// enum creates a new type which can be used like any type
-enum State
-{
-  LINE_FOLLOWER,
-  JUNCTION,
-  TURN_LEFT,
-  TURN_RIGHT,
-  U_TURN,
-  FINISHED,
-  FAKE_END
-};
+#include "Robot/State.h"
 
 struct Path
 {
@@ -34,7 +23,7 @@ private:
 protected:
   static Path path;
 
-  State state; // value of type state
+  ROBOT_STATE state; // value of type state
 
   void followLine();
 

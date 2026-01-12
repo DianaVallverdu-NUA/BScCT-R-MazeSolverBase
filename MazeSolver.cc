@@ -74,11 +74,11 @@ void MazeSolver::displayPath() {
 }
 
 MazeSolver::MazeSolver() {
-  state = LINE_FOLLOWER;
+  state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 bool MazeSolver::finished() {
-  if(state == FINISHED) {
+  if(state == ROBOT_STATE::FINISHED) {
     return true;
   }
   return false;
@@ -116,7 +116,7 @@ void MazeSolver::checkIfJunction() {
   // any other case contains one of these types
 
   if (junction) {
-    state = JUNCTION;
+    state = ROBOT_STATE::IDENTIFYING_JUNCTION;
     motors.setSpeeds(0, 0);
   }
 }
@@ -124,7 +124,7 @@ void MazeSolver::checkIfJunction() {
 void MazeSolver::checkIfDeadEnd() {
   lineSensors.readLineBlack(lineSensorValues);
   if (lineSensorValues[2] < 500) {
-    state = U_TURN;
+    state = ROBOT_STATE::TURNING_BACK;
     addDecision(BACK);
   }
 }
@@ -142,14 +142,14 @@ void MazeSolver::identifyJunction() {
 
   // if can sense everywhere -> FINISHED
   if (lineSensorValues[0] > 950 && lineSensorValues[1] > 950 && lineSensorValues[2] > 950 && lineSensorValues[3] > 950 && lineSensorValues[4] > 950) {
-    state = FINISHED;
+    state = ROBOT_STATE::FINISHED;
     return;
   }
 
 
   // if there's a left take it
   if (lineSensorValues[0] > 750) {
-    state = TURN_LEFT;
+    state = ROBOT_STATE::TURNING_LEFT;
     if (lineSensorValues[2] > 750 || lineSensorValues[4] > 750)
       addDecision(LEFT);
     return;
@@ -159,20 +159,20 @@ void MazeSolver::identifyJunction() {
     motors.setSpeeds(baseSpeed, baseSpeed);
     delay(100);
 
-    state = LINE_FOLLOWER;
+    state = ROBOT_STATE::FOLLOWING_LINE;
     addDecision(FORWARD);
     return;
   }
 
   // if there's a left take it
   if (lineSensorValues[4] > 750) {
-    state = TURN_RIGHT;
+    state = ROBOT_STATE::TURNING_RIGHT;
     return;
   }
 
 
   // any other case -> keep going
-  state = LINE_FOLLOWER;
+  state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 
@@ -185,7 +185,7 @@ void MazeSolver::turnLeft() {
   motors.setSpeeds(-baseSpeed, baseSpeed);
   delay(730);
   motors.setSpeeds(0, 0);
-  state = LINE_FOLLOWER;
+  state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::turnRight() {
@@ -197,44 +197,44 @@ void MazeSolver::turnRight() {
   motors.setSpeeds(baseSpeed, -baseSpeed);
   delay(730);
   motors.setSpeeds(0, 0);
-  state = LINE_FOLLOWER;
+  state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::uTurn() {
   motors.setSpeeds(-baseSpeed, baseSpeed);
   delay(1450);
   motors.setSpeeds(0, 0);
-  state = LINE_FOLLOWER;
+  state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::loop() {
 
-  if (state == LINE_FOLLOWER) {
+  if (state == ROBOT_STATE::FOLLOWING_LINE) {
     followLine();
     //check if junction there's a junction and change state otherwise
     checkIfJunction();
     checkIfDeadEnd(); // got rid of this
   }
 
-  if (state == JUNCTION) {
+  if (state == ROBOT_STATE::IDENTIFYING_JUNCTION) {
     identifyJunction();
   }
 
-  if (state == TURN_LEFT) {
+  if (state == ROBOT_STATE::TURNING_LEFT) {
     turnLeft();
   }
 
-  if (state == TURN_RIGHT) {
+  if (state == ROBOT_STATE::TURNING_RIGHT) {
     turnRight();
   }
-  if (state == U_TURN) {
+  if (state == ROBOT_STATE::TURNING_BACK) {
     uTurn();
   }
-  if (state == FINISHED) {
+  if (state == ROBOT_STATE::FINISHED) {
     motors.setSpeeds(0, 0);
   }
 
-  if (state == FAKE_END) {
+  if (state == ROBOT_STATE::FAKE_END) {
 
 
     while (!buttonB.getSingleDebouncedPress()) {

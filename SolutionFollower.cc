@@ -13,7 +13,7 @@ void SolutionFollower::checkIfJunction() {
   // any other case contains one of these types
 
   if (junction) {
-    state = JUNCTION;
+    state = ROBOT_STATE::IDENTIFYING_JUNCTION;
     motors.setSpeeds(0, 0);
   }
 }
@@ -29,14 +29,14 @@ void SolutionFollower::identifyJunction() {
 
   // if can sense everywhere -> FINISHED
   if (lineSensorValues[0] > 950 && lineSensorValues[1] > 950 && lineSensorValues[2] > 950 && lineSensorValues[3] > 950 && lineSensorValues[4] > 950) {
-    state = FINISHED;
+    state = ROBOT_STATE::FINISHED;
     return;
   }
 
   // case -> a possible left is detected
   if (lineSensorValues[0] > 750) {
     if (lineSensorValues[2] < 750 && lineSensorValues[4] < 750) {
-      state = TURN_LEFT;
+      state = ROBOT_STATE::TURNING_LEFT;
       return;
     }
   }
@@ -44,13 +44,13 @@ void SolutionFollower::identifyJunction() {
   // case -> a possible right is detected
   if (lineSensorValues[4] > 750) {
     if (lineSensorValues[0] < 750 && lineSensorValues[2] < 750) {
-      state = TURN_RIGHT;
+      state = ROBOT_STATE::TURNING_RIGHT;
       return;
     }
   }
 
   if(count == path.length) {
-    state = FAKE_END;
+    state = ROBOT_STATE::FAKE_END;
     return;
   }
 
@@ -60,19 +60,19 @@ void SolutionFollower::identifyJunction() {
   switch (d) {
     case LEFT:
       {
-        state = TURN_LEFT;
+        state = ROBOT_STATE::TURNING_LEFT;
         break;
       }
     case RIGHT:
       {
-        state = TURN_RIGHT;
+        state = ROBOT_STATE::TURNING_RIGHT;
         break;
       }
     case FORWARD:
       {
         motors.setSpeeds(baseSpeed, baseSpeed);
         delay(100);
-        state = LINE_FOLLOWER;
+        state = ROBOT_STATE::FOLLOWING_LINE;
         break;
       }
   }
@@ -82,28 +82,28 @@ void SolutionFollower::identifyJunction() {
 
 void SolutionFollower::loop() {
 
-  if (state == LINE_FOLLOWER) {
+  if (state == ROBOT_STATE::FOLLOWING_LINE) {
     followLine();
     //check if junction there's a junction and change state otherwise
     checkIfJunction();
   }
 
-  if (state == JUNCTION) {
+  if (state == ROBOT_STATE::IDENTIFYING_JUNCTION) {
     identifyJunction();
   }
 
-  if (state == TURN_LEFT) {
+  if (state == ROBOT_STATE::TURNING_LEFT) {
     turnLeft();
   }
 
-  if (state == TURN_RIGHT) {
+  if (state == ROBOT_STATE::TURNING_RIGHT) {
     turnRight();
   }
-  if (state == FINISHED) {
+  if (state == ROBOT_STATE::FINISHED) {
     motors.setSpeeds(0, 0);
   }
 
-  if (state == FAKE_END) {
+  if (state == ROBOT_STATE::FAKE_END) {
 
 
     while (!buttonB.getSingleDebouncedPress()) {
