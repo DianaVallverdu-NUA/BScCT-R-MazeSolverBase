@@ -45,7 +45,6 @@ void MazeSolver::addDecision(DECISION d)
           d = DECISION::RIGHT;
         }
       }
-      // state = FAKE_END;
       path.steps[path.length - 1] = DECISION::NONE;
       path.steps[path.length - 2] = DECISION::NONE;
       path.length -= 2;
@@ -56,22 +55,6 @@ void MazeSolver::addDecision(DECISION d)
   path.length++;
 
   displayPath();
-}
-
-char decisionToChar(DECISION d)
-{
-  switch (d)
-  {
-  case DECISION::FORWARD:
-    return 'F';
-  case DECISION::LEFT:
-    return 'L';
-  case DECISION::RIGHT:
-    return 'R';
-  case DECISION::BACK:
-    return 'B';
-  }
-  return ' ';
 }
 
 void MazeSolver::displayPath()
@@ -161,7 +144,6 @@ void MazeSolver::turnLeft()
 
 void MazeSolver::turnRight()
 {
-
   moveForwardFor(250);
 
   turnRightFor(730);

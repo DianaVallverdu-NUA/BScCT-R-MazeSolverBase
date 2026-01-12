@@ -13,4 +13,6 @@ enum class DECISION
   BACK
 };
 
+char decisionToChar(DECISION d);
+
 #endif
