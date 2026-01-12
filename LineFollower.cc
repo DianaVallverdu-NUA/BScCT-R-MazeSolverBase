@@ -7,16 +7,21 @@ uint16_t LineFollower::lineSensorValues[5];
 int LineFollower::lastError = 0;
 Motors LineFollower::motors;
 
-void LineFollower::calibrateSensors() {
+void LineFollower::calibrateSensors()
+{
   display.clear();
 
   // Wait 1 second and then begin automatic sensor calibration
   // by rotating in place to sweep the sensors over the line
   delay(1000);
-  for (uint16_t i = 0; i < 80; i++) {
-    if (i > 20 && i <= 60) {
+  for (uint16_t i = 0; i < 80; i++)
+  {
+    if (i > 20 && i <= 60)
+    {
       motors.setSpeeds(-(int16_t)calibrationSpeed, calibrationSpeed);
-    } else {
+    }
+    else
+    {
       motors.setSpeeds(calibrationSpeed, -(int16_t)calibrationSpeed);
     }
 
@@ -25,13 +30,9 @@ void LineFollower::calibrateSensors() {
   motors.setSpeeds(0, 0);
 }
 
-
-void LineFollower::setup()
+void LineFollower::loop()
 {
-
-  calibrateSensors();
-
-  lastError = 0;
+  followLine();
 }
 
 void LineFollower::followLine()

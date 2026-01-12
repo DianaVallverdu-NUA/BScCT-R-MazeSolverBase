@@ -11,9 +11,6 @@ constexpr int NUM_SENSORS = 5;
 class LineFollower
 {
 
-private:
-  void calibrateSensors();
-
 protected:
   void followLine();
 
@@ -34,7 +31,7 @@ public:
   static LineSensors lineSensors;
   static unsigned int lineSensorValues[NUM_SENSORS];
 
-  void setup();
+  void calibrateSensors();
 
   virtual void loop();
 };

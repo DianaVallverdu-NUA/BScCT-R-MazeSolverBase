@@ -1,23 +1,6 @@
 #include "SolutionFollower.h"
 #include "Shared.h"
 
-void SolutionFollower::checkIfJunction() {
-  lineSensors.readLineBlack(lineSensorValues);
-
-  bool junction = false;
-
-  if (lineSensorValues[0] > 950) junction = true;  // detect a line to the left
-  if (lineSensorValues[1] > 950) junction = true;  // detect a line to the left
-  if (lineSensorValues[3] > 950) junction = true;  // detect a line to the right
-  if (lineSensorValues[4] > 950) junction = true;  // detect a line to the right
-  // any other case contains one of these types
-
-  if (junction) {
-    state = ROBOT_STATE::IDENTIFYING_JUNCTION;
-    motors.setSpeeds(0, 0);
-  }
-}
-
 void SolutionFollower::identifyJunction() {
 
   // move forward to identify other junctions
@@ -85,7 +68,10 @@ void SolutionFollower::loop() {
   if (state == ROBOT_STATE::FOLLOWING_LINE) {
     followLine();
     //check if junction there's a junction and change state otherwise
-    checkIfJunction();
+    if(reachedJunction()) {
+      state = ROBOT_STATE::IDENTIFYING_JUNCTION;
+      motors.setSpeeds(0, 0);
+    }
   }
 
   if (state == ROBOT_STATE::IDENTIFYING_JUNCTION) {

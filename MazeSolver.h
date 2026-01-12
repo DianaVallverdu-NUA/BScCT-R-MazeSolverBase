@@ -5,14 +5,8 @@
 #include "App/Buttons.h"
 #include "Robot/State.h"
 #include "Robot/Decision.h"
+#include "Robot/Path.h"
 #include "Robot/LineFollower.h"
-
-struct Path
-{
-  static const uint8_t MAX_LEN = 64;
-  DECISION steps[MAX_LEN];
-  uint8_t length = 0;
-};
 
 class MazeSolver : public LineFollower
 {
@@ -23,23 +17,24 @@ private:
   void displayPath();
 
 protected:
+  // path taken by the robot
+  // stored statically so that SolutionFollower can access it
   static Path path;
 
-  ROBOT_STATE state; // value of type state
+  // current robot state
+  ROBOT_STATE state;
 
-  // check whether there is a junction
-  virtual void checkIfJunction();
+  // movement functions
+  void turnLeft();
+  void turnRight();
+  void makeUTurn();
+  
+  // check if robot reached a junction / deadend
+  virtual bool reachedJunction();
+  bool reachedDeadEnd();
 
-  void checkIfDeadEnd();
-
-  // I am in a junction -> identify the type of junction
   virtual void identifyJunction();
 
-  void turnLeft();
-
-  void turnRight();
-
-  void uTurn();
 
 public:
   // constructor

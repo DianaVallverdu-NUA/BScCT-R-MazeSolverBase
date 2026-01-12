@@ -18,22 +18,18 @@ PololuMenu<typeof(display)> menu;
 
 void setup()
 {
-  // Uncomment if necessary to correct motor directions:
-  // motors.flipLeftMotor(true);
-  // motors.flipRightMotor(true);
-
+  // load custom characters so display can show bar graph
   display.loadCustomCharacters();
 
-  // Wait for button B to be pressed and released.
-  display.clear();
-  display.print(F("Press B"));
-  display.gotoXY(0, 1);
-  display.print(F("to calib"));
+  // ask for calibration & wait for button press
+  display.askForCalibration();
   while (!buttonB.getSingleDebouncedPress())
     ;
 
-  mazeSolver.setup();
+  // calibrate sensors -> done statically for all inherited classes
+  mazeSolver.calibrateSensors();
 
+  // show sensor readings until button B is pressed
   display.showReadings();
 
   // Go message
@@ -47,15 +43,17 @@ void loop()
   {
     mazeSolver.loop();
 
-    // copy over path from mazeSolver to solutionFollower
+    // if maze solver finished in THIS LOOP -> wait for be press
     if (mazeSolver.finished())
     {
 
-      // wait for b press
+      // display finished message on line two
       display.gotoXY(0, 1);
       display.print(F("Finished"));
+
+      // wait for b press
       while (!buttonB.getSingleDebouncedPress())
-        ; // wait for button b to be pressed before continuing
+        ; 
     }
 
     return;

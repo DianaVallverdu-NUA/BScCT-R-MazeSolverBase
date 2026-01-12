@@ -4,20 +4,17 @@
 #include "MazeSolver.h"
 #include "Robot/State.h"
 
-class SolutionFollower : public MazeSolver {
-  private:
+class SolutionFollower : public MazeSolver
+{
+private:
   int count = 0;
-
-  // decide whethere there is a junction (including simple turns)
-  void checkIfJunction() override;
 
   // I am in a junction -> identify the type of junction
   void identifyJunction() override;
 
-  public:
-
+public:
   // function to be called at every main loop
-    void loop() override;
+  void loop() override;
 };
 
 #endif

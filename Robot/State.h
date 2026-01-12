@@ -1,7 +1,10 @@
 #ifndef STATE_H
 #define STATE_H
 
-// enum creates a new type which can be used like any type
+/**
+ * Possible states the robot can be in as it navigates the maze.
+ * These states are used both by MazeSolver and SolutionFollower.
+ */
 enum class ROBOT_STATE
 {
   FOLLOWING_LINE,
