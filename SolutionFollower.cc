@@ -96,7 +96,7 @@ void SolutionFollower::identifyJunction() {
   }
 
   if(count == totalLength) {
-    state = FINISHED;
+    state = FAKE_END;
     return;
   }
 

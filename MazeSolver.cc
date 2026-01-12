@@ -238,7 +238,6 @@ void MazeSolver::loop() {
   }
   if (state == FINISHED) {
     motors.setSpeeds(0, 0);
-    while(!buttonB.getSingleDebouncedPress());
   }
 
   if (state == FAKE_END) {
