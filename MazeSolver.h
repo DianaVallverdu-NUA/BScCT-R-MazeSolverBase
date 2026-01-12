@@ -5,6 +5,7 @@
 #include "App/Buttons.h"
 #include "Robot/State.h"
 #include "Robot/Decision.h"
+#include "Robot/LineFollower.h"
 
 struct Path
 {
@@ -13,7 +14,7 @@ struct Path
   uint8_t length = 0;
 };
 
-class MazeSolver
+class MazeSolver : public LineFollower
 {
 
 private:
@@ -25,8 +26,6 @@ protected:
   static Path path;
 
   ROBOT_STATE state; // value of type state
-
-  void followLine();
 
   // check whether there is a junction
   virtual void checkIfJunction();
@@ -49,7 +48,9 @@ public:
   bool finished();
 
   // function to be called at every main loop
-  virtual void loop();
+  virtual void loop() override;
 };
+
+extern MazeSolver mazeSolver;
 
 #endif

@@ -1,5 +1,7 @@
 #include "Display/Display.h"
 #include "App/Buttons.h"
+#include "Robot/LineFollower.h"
+#include "MazeSolver.h"
 
 DisplayManager::DisplayManager()
 {
@@ -9,8 +11,8 @@ DisplayManager::DisplayManager()
   loadCustomCharacters();
 }
 
-
-void DisplayManager::askForCalibration() {
+void DisplayManager::askForCalibration()
+{
   clear();
   print(F("Press B"));
   gotoXY(0, 1);
@@ -22,8 +24,7 @@ void DisplayManager::askForCalibration() {
 void DisplayManager::loadCustomCharacters()
 {
   static const char levels[] PROGMEM = {
-      0, 0, 0, 0, 0, 0, 0, 63, 63, 63, 63, 63, 63, 63
-  };
+      0, 0, 0, 0, 0, 0, 0, 63, 63, 63, 63, 63, 63, 63};
   loadCustomCharacter(levels + 0, 0); // 1 bar
   loadCustomCharacter(levels + 1, 1); // 2 bars
   loadCustomCharacter(levels + 2, 2); // 3 bars
@@ -35,7 +36,10 @@ void DisplayManager::loadCustomCharacters()
 
 void DisplayManager::printBar(uint8_t height)
 {
-  if (height > 8) { height = 8; }
+  if (height > 8)
+  {
+    height = 8;
+  }
   const char barChars[] = {' ', 0, 1, 2, 3, 4, 5, 6, (char)255};
   print(barChars[height]);
 }
@@ -46,9 +50,9 @@ void DisplayManager::showReadings()
 {
   clear();
 
-  while(!buttonB.getSingleDebouncedPress())
+  while (!buttonB.getSingleDebouncedPress())
   {
-    uint16_t position = lineSensors.readLineBlack(lineSensorValues);
+    uint16_t position = mazeSolver.lineSensors.readLineBlack(mazeSolver.lineSensorValues);
 
     gotoXY(0, 0);
     print(position);
@@ -56,7 +60,7 @@ void DisplayManager::showReadings()
     gotoXY(0, 1);
     for (uint8_t i = 0; i < NUM_SENSORS; i++)
     {
-      uint8_t barHeight = map(lineSensorValues[i], 0, 1000, 0, 8);
+      uint8_t barHeight = map(mazeSolver.lineSensorValues[i], 0, 1000, 0, 8);
       printBar(barHeight);
     }
 
