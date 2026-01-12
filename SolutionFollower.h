@@ -24,7 +24,7 @@ class SolutionFollower {
 
   public: 
 
-    Decisions path[50];
+    Decision path[50];
     int totalLength;
 
   // function to be called at every main loop

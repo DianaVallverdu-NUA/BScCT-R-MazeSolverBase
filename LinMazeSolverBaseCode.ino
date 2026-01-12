@@ -1,33 +1,21 @@
-/* This example uses the line sensors on the 3pi+ 32U4 to follow
-a black line on a white background, using a PID-based algorithm.
-It works well on courses with smooth, 6" radius curves and can
-even work with tighter turns, including sharp 90 degree corners.
-This example has been tested with robots using 30:1 MP motors.
-Modifications might be required for it to work well on different
-courses or with different motors. */
-
 #include <Pololu3piPlus32U4.h>
 #include <PololuMenu.h>
+
 #include "Shared.h"
 #include "MazeSolver.h"
 #include "SolutionFollower.h"
+#include "Display/Display.h"
+#include "App/Buttons.h"
 
 using namespace Pololu3piPlus32U4;
-
-// Change next line to this if you are using the older 3pi+
-// with a black and green LCD display:
-// LCD display;
-OLED display;
 
 LineSensors lineSensors;
 Motors motors;
 ButtonA buttonA;
 ButtonB buttonB;
-ButtonC buttonC;
 
 int16_t lastError = 0;
 
-#define NUM_SENSORS 5
 unsigned int lineSensorValues[NUM_SENSORS];
 
 /* Configuration for specific 3pi+ editions: the Standard, Turtle, and
@@ -165,13 +153,11 @@ void setup() {
 
   calibrateSensors();
 
-  showReadings();
+  display.showReadings();
 
-  // Play music and wait for it to finish before we start driving.
+  // Go message
   display.clear();
   display.print(F("Go!"));
-  // buzzer.play("L16 cdegreg4");
-  // while(buzzer.isPlaying());
 }
 
 void loop() {
@@ -181,7 +167,7 @@ void loop() {
     // copy over path from mazeSolver to solutionFollower
     if (mazeSolver.finished()) {
       for (int i = 0; i < 50; i++) {
-        Decisions d = mazeSolver.path.steps[i];  //NO STEPS FOR YOU
+        Decision d = mazeSolver.path.steps[i];  //NO STEPS FOR YOU
 
         solutionFollower.path[i] = d;
       }

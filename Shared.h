@@ -2,11 +2,9 @@
 #define CONSTANTS_H
 
 #include <Pololu3piPlus32U4.h>
-#include <PololuMenu.h>
 
 using namespace Pololu3piPlus32U4;
 
-extern OLED display;
 
 extern Buzzer buzzer;
 extern LineSensors lineSensors;
@@ -35,7 +33,7 @@ enum Mode { SOLVING, FOLLOWING };
 extern Mode mode;
 
 // decisions that can be taken on a junction
-enum Decisions {
+enum Decision {
   NONE,
   FORWARD,
   LEFT,

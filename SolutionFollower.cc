@@ -101,7 +101,7 @@ void SolutionFollower::identifyJunction() {
   }
 
   // it is a junction
-  Decisions d = path[count];
+  Decision d = path[count];
 
   switch (d) {
     case LEFT:
