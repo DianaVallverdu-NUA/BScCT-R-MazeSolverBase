@@ -27,8 +27,21 @@ extern uint16_t baseSpeed;
 
 extern uint16_t calibrationSpeed;
 
-extern uint16_t proportional; // coefficient of the P term * 256
-extern uint16_t derivative; // coefficient of the D term * 256
+extern uint16_t proportional;  // coefficient of the P term * 256
+extern uint16_t derivative;    // coefficient of the D term * 256
+
+// are we solving or are we following solution
+enum Mode { SOLVING, FOLLOWING };
+extern Mode mode;
+
+// decisions that can be taken on a junction
+enum Decisions {
+  NONE,
+  FORWARD,
+  LEFT,
+  RIGHT,
+  BACK
+};
 
 
 #endif
