@@ -7,6 +7,7 @@ enum State {
   LINE_FOLLOWER,
   JUNCTION,
   TURN_LEFT,
+  TURN_RIGHT,
   U_TURN,
   FINISHED,
   FAKE_END
