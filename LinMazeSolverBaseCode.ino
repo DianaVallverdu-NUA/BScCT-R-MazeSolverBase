@@ -64,30 +64,27 @@ uint16_t calibrationSpeed;
 // for your particular 3pi+ and line course, especially if you
 // increase the speed.
 
-uint16_t proportional; // coefficient of the P term * 256
-uint16_t derivative; // coefficient of the D term * 256
+uint16_t proportional;  // coefficient of the P term * 256
+uint16_t derivative;    // coefficient of the D term * 256
 
-Mode mode = SOLVING;
 
 MazeSolver mazeSolver;
 SolutionFollower solutionFollower;
 
-void selectStandard()
-{
+void selectStandard() {
   maxSpeed = 100;
   minSpeed = -100;
   baseSpeed = maxSpeed;
   calibrationSpeed = 60;
-  proportional = 64; // P coefficient = 1/4
-  derivative = 256; // D coefficient = 1
+  proportional = 64;  // P coefficient = 1/4
+  derivative = 256;   // D coefficient = 1
 }
 
 PololuMenu<typeof(display)> menu;
 
 // Sets up special characters in the LCD so that we can display
 // bar graphs.
-void loadCustomCharacters()
-{
+void loadCustomCharacters() {
   static const char levels[] PROGMEM = {
     0, 0, 0, 0, 0, 0, 0, 63, 63, 63, 63, 63, 63, 63
   };
@@ -100,28 +97,22 @@ void loadCustomCharacters()
   display.loadCustomCharacter(levels + 6, 6);  // 7 bars
 }
 
-void printBar(uint8_t height)
-{
+void printBar(uint8_t height) {
   if (height > 8) { height = 8; }
-  const char barChars[] = {' ', 0, 1, 2, 3, 4, 5, 6, (char)255};
+  const char barChars[] = { ' ', 0, 1, 2, 3, 4, 5, 6, (char)255 };
   display.print(barChars[height]);
 }
 
-void calibrateSensors()
-{
+void calibrateSensors() {
   display.clear();
 
   // Wait 1 second and then begin automatic sensor calibration
   // by rotating in place to sweep the sensors over the line
   delay(1000);
-  for(uint16_t i = 0; i < 80; i++)
-  {
-    if (i > 20 && i <= 60)
-    {
+  for (uint16_t i = 0; i < 80; i++) {
+    if (i > 20 && i <= 60) {
       motors.setSpeeds(-(int16_t)calibrationSpeed, calibrationSpeed);
-    }
-    else
-    {
+    } else {
       motors.setSpeeds(calibrationSpeed, -(int16_t)calibrationSpeed);
     }
 
@@ -132,20 +123,17 @@ void calibrateSensors()
 
 // Displays the estimated line position and a bar graph of sensor
 // readings on the LCD. Returns after the user presses B.
-void showReadings()
-{
+void showReadings() {
   display.clear();
 
-  while(!buttonB.getSingleDebouncedPress())
-  {
+  while (!buttonB.getSingleDebouncedPress()) {
     uint16_t position = lineSensors.readLineBlack(lineSensorValues);
 
     display.gotoXY(0, 0);
     display.print(position);
     display.print("    ");
     display.gotoXY(0, 1);
-    for (uint8_t i = 0; i < NUM_SENSORS; i++)
-    {
+    for (uint8_t i = 0; i < NUM_SENSORS; i++) {
       uint8_t barHeight = map(lineSensorValues[i], 0, 1000, 0, 8);
       printBar(barHeight);
     }
@@ -154,8 +142,7 @@ void showReadings()
   }
 }
 
-void setup()
-{
+void setup() {
   // Uncomment if necessary to correct motor directions:
   //motors.flipLeftMotor(true);
   //motors.flipRightMotor(true);
@@ -174,7 +161,8 @@ void setup()
   display.print(F("Press B"));
   display.gotoXY(0, 1);
   display.print(F("to calib"));
-  while(!buttonB.getSingleDebouncedPress());
+  while (!buttonB.getSingleDebouncedPress())
+    ;
 
   calibrateSensors();
 
@@ -187,20 +175,29 @@ void setup()
   // while(buzzer.isPlaying());
 }
 
-void loop()
-{
-  if(mode == SOLVING){
+void loop() {
+  if (!mazeSolver.finished()) {
     mazeSolver.loop();
 
-    // done with solving
-    if(mazeSolver.finished()) {
-      solutionFollower.setPath(mazeSolver.getPath());
-      mode = FOLLOWING;
+    // copy over path from mazeSolver to solutionFollower
+    if (mazeSolver.finished()) {
+      for (int i = 0; i < 50; i++) {
+        Decisions d = mazeSolver.path.steps[i];  //NO STEPS FOR YOU
+
+        solutionFollower.path[i] = d;
+      }
+      solutionFollower.totalLength = mazeSolver.pathLength;
+
+      display.gotoXY(1, 0);
+      display.print(F("Finished"));
+      while (!buttonB.getSingleDebouncedPress());  // wait for button b to be pressed before continuing
     }
 
+
+
+    return;
   }
 
-  if(mode == FOLLOWING) {
-    solutionFollower.loop();
-  }
+  // if maze solver is finished -> follow solution
+  solutionFollower.loop();
 }

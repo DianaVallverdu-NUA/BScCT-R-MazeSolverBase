@@ -20,13 +20,9 @@ struct Path {
 };
 
 class MazeSolver {
-  protected:
+  private:
   State state; // value of type state
 
-  // path to be followed to solve the maze
-  static const int MAX_PATH = 50;
-  Path path;
-  int pathLength = 0;
 
   void addDecision(Decisions d);
 
@@ -34,10 +30,12 @@ class MazeSolver {
 
   void followLine();
 
+  // check whether there is a junction
   void checkIfJunction();
 
   void checkIfDeadEnd();
 
+  // I am in a junction -> identify the type of junction
   void identifyJunction();
 
   void turnLeft();
@@ -48,6 +46,11 @@ class MazeSolver {
   
   public:
 
+  // path to be followed to solve the maze
+  static const int MAX_PATH = 50;
+  Path path;
+  int pathLength = 0;
+  
     // constructor
     MazeSolver();
 

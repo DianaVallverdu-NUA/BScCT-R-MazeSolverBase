@@ -219,7 +219,7 @@ void MazeSolver::loop() {
     followLine();
     //check if junction there's a junction and change state otherwise
     checkIfJunction();
-    checkIfDeadEnd();
+    checkIfDeadEnd(); // got rid of this
   }
 
   if (state == JUNCTION) {
