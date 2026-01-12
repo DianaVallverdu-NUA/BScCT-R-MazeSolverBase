@@ -32,6 +32,8 @@ protected:
   // Identifies type of junction and follows "hand on wall" rule to the left
   virtual void identifyJunction();
 
+  void checkForStateChange();
+
 
 public:
   // constructor

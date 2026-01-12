@@ -177,76 +177,52 @@ void MazeSolver::makeUTurn()
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
+void MazeSolver::checkForStateChange()
+{
+  // if potential junction detected -> change state
+  if (Detector::possibleJunction())
+  {
+    state = ROBOT_STATE::IDENTIFYING_JUNCTION;
+    motors.setSpeeds(0, 0);
+    return;
+  }
+
+  // if dead end detected -> change state
+  if (Detector::reachedDeadEnd())
+  {
+    state = ROBOT_STATE::TURNING_BACK;
+    addDecision(DECISION::BACK);
+    return;
+  }
+}
+
 void MazeSolver::loop()
 {
 
-  if (state == ROBOT_STATE::FOLLOWING_LINE)
+  switch (state)
   {
+  case ROBOT_STATE::FOLLOWING_LINE:
     followLine();
-
-    if (Detector::possibleJunction())
-    {
-      state = ROBOT_STATE::IDENTIFYING_JUNCTION;
-      motors.setSpeeds(0, 0);
-    }
-    else
-    {
-      if (Detector::reachedDeadEnd())
-      {
-        state = ROBOT_STATE::TURNING_BACK;
-        addDecision(DECISION::BACK);
-      }
-    }
-  }
-
-  if (state == ROBOT_STATE::IDENTIFYING_JUNCTION)
-  {
+    checkForStateChange();
+    break;
+  case ROBOT_STATE::IDENTIFYING_JUNCTION:
     identifyJunction();
-  }
-
-  if (state == ROBOT_STATE::TURNING_LEFT)
-  {
+    break;
+  case ROBOT_STATE::TURNING_LEFT:
     turnLeft();
-  }
-
-  if (state == ROBOT_STATE::TURNING_RIGHT)
-  {
+    break;
+  case ROBOT_STATE::TURNING_RIGHT:
     turnRight();
-  }
-  if (state == ROBOT_STATE::TURNING_BACK)
-  {
+    break;
+  case ROBOT_STATE::TURNING_BACK:
     makeUTurn();
-  }
-  if (state == ROBOT_STATE::FINISHED)
-  {
+    break;
+  case ROBOT_STATE::FINISHED:
     motors.setSpeeds(0, 0);
-  }
-
-  if (state == ROBOT_STATE::FAKE_END)
-  {
-
-    while (!buttonB.getSingleDebouncedPress())
-    {
-      uint16_t position = lineSensors.readLineBlack(lineSensorValues);
-
-      display.gotoXY(0, 0);
-      display.print(position);
-      display.print("    ");
-      display.gotoXY(0, 1);
-      for (uint8_t i = 0; i < NUM_SENSORS; i++)
-      {
-        uint8_t barHeight = map(lineSensorValues[i], 0, 1000, 0, 8);
-
-        if (barHeight > 8)
-        {
-          barHeight = 8;
-        }
-        const char barChars[] = {' ', 0, 1, 2, 3, 4, 5, 6, (char)255};
-        display.print(barChars[barHeight]);
-      }
-
-      delay(50);
-    }
+    break;
+  case ROBOT_STATE::FAKE_END:
+    display.printBar(8);
+    break;
   }
 }
 
