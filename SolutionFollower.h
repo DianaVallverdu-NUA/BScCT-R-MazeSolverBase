@@ -13,10 +13,7 @@ class SolutionFollower : public MazeSolver {
   // I am in a junction -> identify the type of junction
   void identifyJunction() override;
 
-  public: 
-
-    Decision path[50];
-    int totalLength;
+  public:
 
   // function to be called at every main loop
     void loop() override;

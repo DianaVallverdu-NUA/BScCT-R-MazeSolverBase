@@ -49,13 +49,13 @@ void SolutionFollower::identifyJunction() {
     }
   }
 
-  if(count == totalLength) {
+  if(count == path.length) {
     state = FAKE_END;
     return;
   }
 
   // it is a junction
-  Decision d = path[count];
+  Decision d = path.steps[count];
 
   switch (d) {
     case LEFT:

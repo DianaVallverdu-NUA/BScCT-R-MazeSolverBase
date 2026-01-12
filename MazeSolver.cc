@@ -7,7 +7,7 @@ using namespace Pololu3piPlus32U4;
 
 void MazeSolver::addDecision(Decision d) {
 
-  if (path.length >= MAX_PATH) return;
+  if (path.length >= path.MAX_LEN) return;
 
   if (path.length > 1)
     if (path.steps[path.length - 1] == BACK) {
@@ -75,10 +75,6 @@ void MazeSolver::displayPath() {
 
 MazeSolver::MazeSolver() {
   state = LINE_FOLLOWER;
-}
-
-const Path& MazeSolver::getPath() {
-    return path;
 }
 
 bool MazeSolver::finished() {
@@ -260,3 +256,5 @@ void MazeSolver::loop() {
     }
   }
 }
+
+Path MazeSolver::path{};

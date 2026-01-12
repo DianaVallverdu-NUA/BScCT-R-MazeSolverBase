@@ -166,13 +166,8 @@ void loop() {
 
     // copy over path from mazeSolver to solutionFollower
     if (mazeSolver.finished()) {
-      for (int i = 0; i < 50; i++) {
-        Decision d = mazeSolver.path.steps[i];  //NO STEPS FOR YOU
 
-        solutionFollower.path[i] = d;
-      }
-      solutionFollower.totalLength = mazeSolver.path.length;
-
+      // wait for b press
       display.gotoXY(0, 1);
       display.print(F("Finished"));
       while (!buttonB.getSingleDebouncedPress());  // wait for button b to be pressed before continuing
