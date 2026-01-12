@@ -27,6 +27,11 @@ protected:
   static const uint16_t proportional = 64; // coefficient of the P term * 256
   static const uint16_t derivative = 256;  // coefficient of the D term * 256
 
+  void moveForwardFor(uint16_t ms);
+
+  void turnLeftFor(uint16_t ms);
+  void turnRightFor(uint16_t ms);
+
 public:
   static LineSensors lineSensors;
   static unsigned int lineSensorValues[NUM_SENSORS];

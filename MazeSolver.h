@@ -28,11 +28,8 @@ protected:
   void turnLeft();
   void turnRight();
   void makeUTurn();
-  
-  // check if robot reached a junction / deadend
-  virtual bool reachedJunction();
-  bool reachedDeadEnd();
 
+  // Identifies type of junction and follows "hand on wall" rule to the left
   virtual void identifyJunction();
 
 

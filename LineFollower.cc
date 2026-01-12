@@ -30,6 +30,27 @@ void LineFollower::calibrateSensors()
   motors.setSpeeds(0, 0);
 }
 
+void LineFollower::moveForwardFor(uint16_t ms)
+{
+  motors.setSpeeds(baseSpeed, baseSpeed);
+  delay(ms);
+  motors.setSpeeds(0, 0);
+}
+
+void LineFollower::turnLeftFor(uint16_t ms)
+{
+  motors.setSpeeds(-baseSpeed, baseSpeed);
+  delay(ms);
+  motors.setSpeeds(0, 0);
+}
+
+void LineFollower::turnRightFor(uint16_t ms)
+{
+  motors.setSpeeds(baseSpeed, -baseSpeed);
+  delay(ms);
+  motors.setSpeeds(0, 0);
+}
+
 void LineFollower::loop()
 {
   followLine();

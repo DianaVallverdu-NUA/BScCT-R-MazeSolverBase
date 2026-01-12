@@ -4,6 +4,7 @@
 using namespace Pololu3piPlus32U4;
 
 #include "MazeSolver.h"
+#include "Detector/Detector.h"
 
 void MazeSolver::addDecision(DECISION d)
 {
@@ -102,100 +103,69 @@ bool MazeSolver::finished()
   return false;
 }
 
-bool MazeSolver::reachedJunction()
-{
-  lineSensors.readLineBlack(lineSensorValues);
-  if (lineSensorValues[0] > 950)
-    return true; // detect a line to the far left
-  if (lineSensorValues[1] > 950)
-    return true; // detect a line to the near left
-  if (lineSensorValues[3] > 950)
-    return true; // detect a line to the near right
-  if (lineSensorValues[4] > 950)
-    return true; // detect a line to the far right
-  return false;
-}
-
-bool MazeSolver::reachedDeadEnd()
-{
-  lineSensors.readLineBlack(lineSensorValues);
-  if (lineSensorValues[2] < 500)
-  {
-    return true;
-  }
-  return false;
-}
-
 void MazeSolver::identifyJunction()
 {
 
   delay(500);
-  // move forward to identify other junctions
-  motors.setSpeeds(baseSpeed, baseSpeed);
-  delay(250);
-  motors.setSpeeds(0, 0);
+  moveForwardFor(250);
   lineSensors.readLineBlack(lineSensorValues);
 
   // if can sense everywhere -> FINISHED
-  if (lineSensorValues[0] > 950 && lineSensorValues[1] > 950 && lineSensorValues[2] > 950 && lineSensorValues[3] > 950 && lineSensorValues[4] > 950)
+  if (Detector::endOfMazeReached())
   {
     state = ROBOT_STATE::FINISHED;
     return;
   }
 
   // if there's a left take it
-  if (lineSensorValues[0] > 750)
+  if (Detector::canTurnLeft())
   {
     state = ROBOT_STATE::TURNING_LEFT;
-    if (lineSensorValues[2] > 750 || lineSensorValues[4] > 750)
+
+    // only add as decision if it's not a simple left
+    if (!Detector::isSimpleLeft())
       addDecision(DECISION::LEFT);
     return;
   }
 
-  if (lineSensorValues[2] > 750)
+  if (Detector::canGoForward())
   {
-    motors.setSpeeds(baseSpeed, baseSpeed);
-    delay(100);
+    // move forward to avoid redetecting junction
+    moveForwardFor(100);
 
+    // change state & add decision
     state = ROBOT_STATE::FOLLOWING_LINE;
     addDecision(DECISION::FORWARD);
     return;
   }
 
-  // if there's a left take it
-  if (lineSensorValues[4] > 750)
+  // if there's a right but don't record as it will only be simple
+  if (Detector::isSimpleRight())
   {
     state = ROBOT_STATE::TURNING_RIGHT;
     return;
   }
 
-  // any other case -> keep going
+  // any other case -> keep going there might have been a misdetection
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::turnLeft()
 {
+  moveForwardFor(250);
 
-  motors.setSpeeds(baseSpeed, baseSpeed);
-  delay(250);
-  motors.setSpeeds(0, 0);
+  turnLeftFor(730);
 
-  motors.setSpeeds(-baseSpeed, baseSpeed);
-  delay(730);
-  motors.setSpeeds(0, 0);
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::turnRight()
 {
 
-  motors.setSpeeds(baseSpeed, baseSpeed);
-  delay(250);
-  motors.setSpeeds(0, 0);
+  moveForwardFor(250);
 
-  motors.setSpeeds(baseSpeed, -baseSpeed);
-  delay(730);
-  motors.setSpeeds(0, 0);
+  turnRightFor(730);
+
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
@@ -214,14 +184,14 @@ void MazeSolver::loop()
   {
     followLine();
 
-    if (reachedJunction())
+    if (Detector::possibleJunction())
     {
       state = ROBOT_STATE::IDENTIFYING_JUNCTION;
       motors.setSpeeds(0, 0);
     }
     else
     {
-      if (reachedDeadEnd())
+      if (Detector::reachedDeadEnd())
       {
         state = ROBOT_STATE::TURNING_BACK;
         addDecision(DECISION::BACK);

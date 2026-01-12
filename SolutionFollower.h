@@ -9,7 +9,7 @@ class SolutionFollower : public MazeSolver
 private:
   int count = 0;
 
-  // I am in a junction -> identify the type of junction
+  // Identifies type of junction and follows path accordingly
   void identifyJunction() override;
 
 public:
