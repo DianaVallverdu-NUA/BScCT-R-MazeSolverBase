@@ -36,7 +36,7 @@ public:
   // Add a decision to the path.
   void addDecision(DECISION d);
 
-  // Display path
-  void display();
+  // Display path on OLED screen.
+  void displayPath();
 };
 #endif

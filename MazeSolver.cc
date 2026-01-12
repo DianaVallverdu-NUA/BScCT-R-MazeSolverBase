@@ -42,7 +42,7 @@ void MazeSolver::identifyJunction()
     // only add as decision if it's not a simple left
     if (!Detector::isSimpleLeft()){
       path.addDecision(DECISION::LEFT);
-      path.display();
+      path.displayPath();
     }
     return;
   }
@@ -55,7 +55,7 @@ void MazeSolver::identifyJunction()
     // change state & add decision
     state = ROBOT_STATE::FOLLOWING_LINE;
     path.addDecision(DECISION::FORWARD);
-    path.display();
+    path.displayPath();
     return;
   }
 
@@ -111,7 +111,7 @@ void MazeSolver::checkForStateChange()
   {
     state = ROBOT_STATE::TURNING_BACK;
     path.addDecision(DECISION::BACK);
-    path.display();
+    path.displayPath();
     return;
   }
 }

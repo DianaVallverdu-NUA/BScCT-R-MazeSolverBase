@@ -56,18 +56,18 @@ void Path::replaceLastThree(DECISION d)
   length -= 2;
 }
 
-void Path::display()
+void Path::displayPath()
 {
   display.clear();
   display.gotoXY(0, 0);
   for (int i = 0; i < 8; i++)
   {
-    display.print(decisionToChar(path.steps[i]));
+    display.print(decisionToChar(steps[i]));
   }
   display.gotoXY(0, 1);
   for (int i = 8; i < 16; i++)
   {
-    display.print(decisionToChar(path.steps[i]));
+    display.print(decisionToChar(steps[i]));
   }
 }
 
