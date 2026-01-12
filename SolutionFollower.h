@@ -11,10 +11,6 @@ private:
 
   // Identifies type of junction and follows path accordingly
   void identifyJunction() override;
-
-public:
-  // function to be called at every main loop
-  void loop() override;
 };
 
 #endif

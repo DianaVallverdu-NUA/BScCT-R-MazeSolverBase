@@ -32,6 +32,7 @@ protected:
   // Identifies type of junction and follows "hand on wall" rule to the left
   virtual void identifyJunction();
 
+  // checks for state changes while following line
   void checkForStateChange();
 
 
@@ -42,7 +43,7 @@ public:
   bool finished();
 
   // function to be called at every main loop
-  virtual void loop() override;
+  void loop() override;
 };
 
 extern MazeSolver mazeSolver;
