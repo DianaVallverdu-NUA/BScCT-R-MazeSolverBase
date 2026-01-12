@@ -1,5 +1,5 @@
 #include "Robot/Path.h"
-#include "Display/Display.h"
+#include "Utils/Display.h"
 
 bool Path::memoryFull()
 {
@@ -60,10 +60,13 @@ void Path::displayPath()
 {
   display.clear();
   display.gotoXY(0, 0);
+  // loop through first 8 -> top row
   for (int i = 0; i < 8; i++)
   {
     display.print(decisionToChar(steps[i]));
   }
+
+  // loop through second 8 -> bottom row
   display.gotoXY(0, 1);
   for (int i = 8; i < 16; i++)
   {
@@ -85,24 +88,38 @@ void Path::addDecision(DECISION d)
 
 void Path::simplify()
 {
+  // only simplify when we have already been trhough a u turn and have taken a new decision
   if (!previousWasBack())
     return;
 
-  if (leftBackForward() || forwardBackLeft())
+  // identify simplification needed & replace with appropriate decision
+  if (leftBackForward() || forwardBackLeft()) // LBF or FBL = RIGHT
   {
     replaceLastThree(DECISION::RIGHT);
     return;
   }
 
-  if (leftBackLeft())
+  if (leftBackLeft()) // LBL = FORWARD
   {
     replaceLastThree(DECISION::FORWARD);
     return;
   }
 
-  if (rightBackLeft() || forwardBackForward())
+  if (rightBackLeft() || forwardBackForward()) // RBL or FBF = BACK
   {
     replaceLastThree(DECISION::BACK);
     return;
   }
 };
+
+DECISION Path::getStep(int index)
+{
+  if (index < 0 || index >= length)
+    return DECISION::NONE;
+  return steps[index];
+}
+
+int Path::getLength()
+{
+  return length;
+}

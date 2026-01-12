@@ -1,13 +1,10 @@
-#include "Display/Display.h"
-#include "App/Buttons.h"
+#include "Utils/Display.h"
+#include "Utils/Buttons.h"
 #include "Robot/LineFollower.h"
-#include "MazeSolver.h"
+#include "Robot/MazeSolver.h"
 
 DisplayManager::DisplayManager()
 {
-  // Change next line to this if you are using the older 3pi+
-  // with a black and green LCD display:
-  // LCD display;
   loadCustomCharacters();
 }
 
@@ -19,8 +16,6 @@ void DisplayManager::askForCalibration()
   print(F("to calib"));
 }
 
-// Sets up special characters in the LCD so that we can display
-// bar graphs.
 void DisplayManager::loadCustomCharacters()
 {
   static const char levels[] PROGMEM = {
@@ -44,8 +39,6 @@ void DisplayManager::printBar(uint8_t height)
   print(barChars[height]);
 }
 
-// Displays the estimated line position and a bar graph of sensor
-// readings on the LCD. Returns after the user presses B.
 void DisplayManager::showReadings()
 {
   clear();

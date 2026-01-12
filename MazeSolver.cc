@@ -3,13 +3,8 @@
 
 using namespace Pololu3piPlus32U4;
 
-#include "MazeSolver.h"
-#include "Detector/Detector.h"
-
-MazeSolver::MazeSolver()
-{
-  state = ROBOT_STATE::FOLLOWING_LINE;
-}
+#include "Robot/MazeSolver.h"
+#include "Robot/Detector.h"
 
 bool MazeSolver::finished()
 {
@@ -22,10 +17,9 @@ bool MazeSolver::finished()
 
 void MazeSolver::identifyJunction()
 {
-
+  // move forward so robot can check better type of junction
   delay(500);
   moveForwardFor(250);
-  lineSensors.readLineBlack(lineSensorValues);
 
   // if can sense everywhere -> FINISHED
   if (Detector::endOfMazeReached())
@@ -40,13 +34,15 @@ void MazeSolver::identifyJunction()
     state = ROBOT_STATE::TURNING_LEFT;
 
     // only add as decision if it's not a simple left
-    if (!Detector::isSimpleLeft()){
+    if (!Detector::isSimpleLeft())
+    {
       path.addDecision(DECISION::LEFT);
       path.displayPath();
     }
     return;
   }
 
+  // if can go forward -> go forward
   if (Detector::canGoForward())
   {
     // move forward to avoid redetecting junction
@@ -59,7 +55,8 @@ void MazeSolver::identifyJunction()
     return;
   }
 
-  // if there's a right but don't record as it will only be simple
+  // if there's a right take it but don't record as decision
+  // as it means no other option was available
   if (Detector::isSimpleRight())
   {
     state = ROBOT_STATE::TURNING_RIGHT;
@@ -67,38 +64,46 @@ void MazeSolver::identifyJunction()
   }
 
   // any other case -> keep going there might have been a misdetection
+  moveForwardFor(50);
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::turnLeft()
 {
+  // move forward to center robot on line.
   moveForwardFor(250);
 
+  // turn left -> delay found empirically.
   turnLeftFor(730);
 
+  // go back to following line
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::turnRight()
 {
+  // move forward to center robot on line.
   moveForwardFor(250);
 
+  // turn right -> delay found empirically.
   turnRightFor(730);
 
+  // go back to following line
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::makeUTurn()
 {
-  motors.setSpeeds(-baseSpeed, baseSpeed);
-  delay(1450);
-  motors.setSpeeds(0, 0);
+  // turn on itself for 1450 ms -> delay found empirically.
+  turnLeftFor(1450);
+
+  // go back to following line
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::checkForStateChange()
 {
-  // if potential junction detected -> change state
+  // if potential junction detected -> change state to identify
   if (Detector::possibleJunction())
   {
     state = ROBOT_STATE::IDENTIFYING_JUNCTION;
@@ -106,7 +111,7 @@ void MazeSolver::checkForStateChange()
     return;
   }
 
-  // if dead end detected -> change state
+  // if dead end detected -> change state to turn back
   if (Detector::reachedDeadEnd())
   {
     state = ROBOT_STATE::TURNING_BACK;
@@ -118,12 +123,12 @@ void MazeSolver::checkForStateChange()
 
 void MazeSolver::loop()
 {
-
+  // check current state and call function accordingly
   switch (state)
   {
   case ROBOT_STATE::FOLLOWING_LINE:
     followLine();
-    checkForStateChange();
+    checkForStateChange(); // when following line also check for state changes
     break;
   case ROBOT_STATE::IDENTIFYING_JUNCTION:
     identifyJunction();
@@ -138,9 +143,12 @@ void MazeSolver::loop()
     makeUTurn();
     break;
   case ROBOT_STATE::FINISHED:
-    motors.setSpeeds(0, 0);
+    motors.setSpeeds(0, 0); // done -> stop moving
     break;
   case ROBOT_STATE::FAKE_END:
+    // fake end is used here for debugging purposes.
+    // if pololu is behaving unexpectedly, it can be used to stop the robot & display calibration.
+    motors.setSpeeds(0, 0);
     display.printBar(8);
     break;
   }

@@ -1,11 +1,10 @@
 #include <Pololu3piPlus32U4.h>
 #include <PololuMenu.h>
 
-#include "Shared.h"
-#include "MazeSolver.h"
-#include "SolutionFollower.h"
-#include "Display/Display.h"
-#include "App/Buttons.h"
+#include "Robot/MazeSolver.h"
+#include "Robot/SolutionFollower.h"
+#include "Utils/Display.h"
+#include "Utils/Buttons.h"
 
 using namespace Pololu3piPlus32U4;
 
@@ -18,9 +17,6 @@ PololuMenu<typeof(display)> menu;
 
 void setup()
 {
-  // load custom characters so display can show bar graph
-  display.loadCustomCharacters();
-
   // ask for calibration & wait for button press
   display.askForCalibration();
   while (!buttonB.getSingleDebouncedPress())
@@ -39,6 +35,7 @@ void setup()
 
 void loop()
 {
+  // if maze solver not finished -> keep solving maze
   if (!mazeSolver.finished())
   {
     mazeSolver.loop();

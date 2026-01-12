@@ -1,11 +1,12 @@
 #include "Robot/LineFollower.h"
-#include "Display/Display.h"
+#include "Utils/Display.h"
 
 // Allocate storage for static members
 LineSensors LineFollower::lineSensors;
 uint16_t LineFollower::lineSensorValues[5];
 int LineFollower::lastError = 0;
 Motors LineFollower::motors;
+
 
 void LineFollower::calibrateSensors()
 {
@@ -32,6 +33,7 @@ void LineFollower::calibrateSensors()
 
 void LineFollower::moveForwardFor(uint16_t ms)
 {
+  // set motors to base speed & delay for ms before stopping
   motors.setSpeeds(baseSpeed, baseSpeed);
   delay(ms);
   motors.setSpeeds(0, 0);
@@ -39,6 +41,7 @@ void LineFollower::moveForwardFor(uint16_t ms)
 
 void LineFollower::turnLeftFor(uint16_t ms)
 {
+  // set motors to - / + base speed & delay for ms before stopping
   motors.setSpeeds(-baseSpeed, baseSpeed);
   delay(ms);
   motors.setSpeeds(0, 0);
@@ -46,6 +49,7 @@ void LineFollower::turnLeftFor(uint16_t ms)
 
 void LineFollower::turnRightFor(uint16_t ms)
 {
+  // set motors to + / - base speed & delay for ms before stopping
   motors.setSpeeds(baseSpeed, -baseSpeed);
   delay(ms);
   motors.setSpeeds(0, 0);
@@ -53,6 +57,7 @@ void LineFollower::turnRightFor(uint16_t ms)
 
 void LineFollower::loop()
 {
+  // simply follow line
   followLine();
 }
 

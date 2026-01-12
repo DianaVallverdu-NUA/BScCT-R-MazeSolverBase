@@ -13,6 +13,10 @@ enum class DECISION
   BACK
 };
 
+/**
+ * Convert a DECISION enum to its corresponding character representation.
+ * 'F' for FORWARD, 'L' for LEFT, 'R' for RIGHT, 'B' for BACK, and ' ' for NONE.
+ */
 char decisionToChar(DECISION d);
 
 #endif

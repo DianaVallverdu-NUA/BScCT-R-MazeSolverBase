@@ -1,5 +1,5 @@
-#ifndef STATE_H
-#define STATE_H
+#ifndef ROBOT_STATE_H
+#define ROBOT_STATE_H
 
 /**
  * Possible states the robot can be in as it navigates the maze.
