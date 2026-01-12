@@ -2,6 +2,7 @@
 #define DISPLAY_H
 
 #include "../Shared.h"
+#include "../LineFollower/LineFollower.h"
 
 #include <Pololu3piPlus32U4.h>
 using namespace Pololu3piPlus32U4;

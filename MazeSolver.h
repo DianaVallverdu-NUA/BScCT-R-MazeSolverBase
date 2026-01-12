@@ -21,7 +21,7 @@ struct Path {
     uint8_t length = 0;
 };
 
-class MazeSolver {
+class MazeSolver : public LineFollower {
   protected:
   State state; // value of type state
 
@@ -33,8 +33,6 @@ class MazeSolver {
   void addDecision(Decision d);
 
   void displayPath();
-
-  void followLine();
 
   void checkIfJunction();
 
