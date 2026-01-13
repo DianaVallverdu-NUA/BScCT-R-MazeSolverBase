@@ -1,8 +1,3 @@
-
-#include <Pololu3piPlus32U4.h>
-
-using namespace Pololu3piPlus32U4;
-
 #include "Robot/MazeSolver.h"
 #include "Robot/Detector.h"
 

@@ -2,7 +2,6 @@
 #define LINE_FOLLOWER_H
 
 #include <Pololu3piPlus32U4.h>
-#include <PololuMenu.h>
 
 using namespace Pololu3piPlus32U4;
 

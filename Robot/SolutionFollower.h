@@ -2,7 +2,6 @@
 #define SOLUTION_H
 
 #include "MazeSolver.h"
-#include "State.h"
 
 /**
  * Once a path is found this class loops through the stored path and follow along.

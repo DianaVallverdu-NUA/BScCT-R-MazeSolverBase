@@ -1,7 +1,6 @@
 #include "Utils/Display.h"
 #include "Utils/Buttons.h"
 #include "Robot/LineFollower.h"
-#include "Robot/MazeSolver.h"
 
 DisplayManager::DisplayManager()
 {
@@ -45,7 +44,7 @@ void DisplayManager::showReadings()
 
   while (!buttonB.getSingleDebouncedPress())
   {
-    uint16_t position = mazeSolver.lineSensors.readLineBlack(mazeSolver.lineSensorValues);
+    uint16_t position = LineFollower::lineSensors.readLineBlack(LineFollower::lineSensorValues);
 
     gotoXY(0, 0);
     print(position);
@@ -53,7 +52,7 @@ void DisplayManager::showReadings()
     gotoXY(0, 1);
     for (uint8_t i = 0; i < NUM_SENSORS; i++)
     {
-      uint8_t barHeight = map(mazeSolver.lineSensorValues[i], 0, 1000, 0, 8);
+      uint8_t barHeight = map(LineFollower::lineSensorValues[i], 0, 1000, 0, 8);
       printBar(barHeight);
     }
 
