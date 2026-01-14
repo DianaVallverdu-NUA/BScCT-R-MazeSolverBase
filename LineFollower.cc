@@ -7,6 +7,8 @@ uint16_t LineFollower::lastError = 0;
 Motors LineFollower::motors;
 
 
+// The implementation of calibrateSensors has been copied from the Pololu examples.
+// Read the Pololu documentation to understand this function better.
 void LineFollower::calibrateSensors()
 {
   display.clear();
@@ -60,6 +62,8 @@ void LineFollower::loop()
   followLine();
 }
 
+// The implementation of followLine has been copied from the Pololu examples.
+// Read the Pololu documentation to understand this function better.
 void LineFollower::followLine()
 {
   // get position & error

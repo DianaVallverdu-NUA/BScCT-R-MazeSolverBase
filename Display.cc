@@ -3,6 +3,10 @@
 #include "Robot/LineFollower.h"
 #include "Robot/LineSensorsManager.h"
 
+/**
+ * All implementation of DisplayManager has been copied & pasted from the Pololu Examples. Read the Pololu documentation if you want to understand these better.
+ */
+
 DisplayManager::DisplayManager()
 {
   loadCustomCharacters();

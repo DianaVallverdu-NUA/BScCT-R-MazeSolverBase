@@ -1,5 +1,4 @@
 #include <Pololu3piPlus32U4.h>
-#include <PololuMenu.h>
 
 #include "Robot/MazeSolver.h"
 #include "Robot/SolutionFollower.h"
@@ -10,10 +9,11 @@ using namespace Pololu3piPlus32U4;
 
 ButtonB buttonB;
 
+// MazeSolver inherits from LineFollower -> uses followLine & motor primitives to navigate a maze and look for the shortest
 MazeSolver mazeSolver;
-SolutionFollower solutionFollower;
 
-PololuMenu<typeof(display)> menu;
+// SolutionFollower inherits from MazeSolver -> follows static path found by MazeSolver
+SolutionFollower solutionFollower;
 
 void setup()
 {
@@ -50,7 +50,7 @@ void loop()
 
       // wait for b press
       while (!buttonB.getSingleDebouncedPress())
-        ; 
+        ;
     }
 
     return;

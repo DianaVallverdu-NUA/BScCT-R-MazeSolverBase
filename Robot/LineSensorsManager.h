@@ -12,9 +12,24 @@ class LineSensorsManager : public LineSensors
 {
 
 private:
+  // ============================ LINE SENSOR VALUES ============================
   uint16_t lineSensorValues[5];
 
 public:
+  // ============================ GETTERS ============================
+
+  /**
+   * @returns pointer to lineSensorValues vector
+   */
+  const uint16_t *getLineSensorValues();
+
+  /**
+   * @returns position value based on current line sensors
+   */
+  int16_t getPosition();
+
+  // ============================ BOOLEAN CHECKS ============================
+
   /**
    * @returns true when all sensors are above given threshold, false otherwise
    */
@@ -39,18 +54,9 @@ public:
    * Detect if any of the sensors is above given threshold
    */
   bool areAnySideSensorsAbove(uint16_t threshold) const;
-
-  /**
-   * @returns pointer to lineSensorValues vector
-   */
-  const uint16_t *getLineSensorValues();
-
-  /**
-   * @returns position value based on current line sensors
-   */
-  int16_t getPosition();
 };
 
+// global variable used in Display, LineFollower & MazeSolver
 extern LineSensorsManager lineSensors;
 
 #endif

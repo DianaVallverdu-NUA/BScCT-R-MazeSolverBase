@@ -91,6 +91,8 @@ protected:
   bool isSimpleRight();
 
 public:
+  // ============================ PUBLIC FUNCTIONS ============================
+
   /**
    * @returns true if the maze has been solved, false otherwise.
    */
