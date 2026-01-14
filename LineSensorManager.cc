@@ -2,7 +2,7 @@
 #include "Robot/LineFollower.h"
 
 
-bool LineSensorsManager::areAllSensorsAbove(int threshold) const
+bool LineSensorsManager::areAllSensorsAbove(uint16_t threshold) const
 {
   // read sensors
   readLineBlack(lineSensorValues);
@@ -19,7 +19,7 @@ bool LineSensorsManager::areAllSensorsAbove(int threshold) const
   return false;
 }
 
-bool LineSensorsManager::isMiddleAbove(int threshold) const
+bool LineSensorsManager::isMiddleAbove(uint16_t threshold) const
 {
   // read sensors
   readLineBlack(lineSensorValues);
@@ -32,7 +32,7 @@ bool LineSensorsManager::isMiddleAbove(int threshold) const
   return false;
 }
 
-bool LineSensorsManager::isLeftmostAbove(int threshold) const
+bool LineSensorsManager::isLeftmostAbove(uint16_t threshold) const
 {
   // read sensors
   readLineBlack(lineSensorValues);
@@ -45,7 +45,7 @@ bool LineSensorsManager::isLeftmostAbove(int threshold) const
   return false;
 }
 
-bool LineSensorsManager::isRightmostAbove(int threshold) const
+bool LineSensorsManager::isRightmostAbove(uint16_t threshold) const
 {
   // read sensors
   readLineBlack(lineSensorValues);
@@ -58,7 +58,7 @@ bool LineSensorsManager::isRightmostAbove(int threshold) const
   return false;
 }
 
-bool LineSensorsManager::areAnySensorsAbove(int threshold) const 
+bool LineSensorsManager::areAnySideSensorsAbove(uint16_t threshold) const 
 {
 // read sensors
 readLineBlack(lineSensorValues);
@@ -76,7 +76,7 @@ if (lineSensorValues[4] > threshold)
 return false;
 }
 
-const unsigned int *LineSensorsManager::getLineSensorValues()
+const uint16_t *LineSensorsManager::getLineSensorValues()
 {
   return lineSensorValues;
 }

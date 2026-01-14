@@ -2,8 +2,8 @@
 #include "Utils/Display.h"
 #include "Robot/LineSensorsManager.h"
 
-// Allocate storage for static members
-int LineFollower::lastError = 0;
+// Allocate storage for non constant static members
+uint16_t LineFollower::lastError = 0;
 Motors LineFollower::motors;
 
 

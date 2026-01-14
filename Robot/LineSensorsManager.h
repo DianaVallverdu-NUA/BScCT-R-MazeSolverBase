@@ -12,38 +12,38 @@ class LineSensorsManager : public LineSensors
 {
 
 private:
-  unsigned int lineSensorValues[5];
+  uint16_t lineSensorValues[5];
 
 public:
   /**
    * @returns true when all sensors are above given threshold, false otherwise
    */
-  bool areAllSensorsAbove(int threshold) const;
+  bool areAllSensorsAbove(uint16_t threshold) const;
 
   /**
    * @returns true if middle sensor is above given threshold, false otherwise
    */
-  bool isMiddleAbove(int threshold) const;
+  bool isMiddleAbove(uint16_t threshold) const;
 
   /**
    * @returns true if leftmost sensor is above given threshold, false otherwise.
    */
-  bool isLeftmostAbove(int threshold) const;
+  bool isLeftmostAbove(uint16_t threshold) const;
 
   /**
    * @returns true if rightmost sensor is above given threshold, false otherwise.
    */
-  bool isRightmostAbove(int threshold) const;
+  bool isRightmostAbove(uint16_t threshold) const;
 
   /**
    * Detect if any of the sensors is above given threshold
    */
-  bool areAnySensorsAbove(int threshold) const;
+  bool areAnySideSensorsAbove(uint16_t threshold) const;
 
   /**
    * @returns pointer to lineSensorValues vector
    */
-  const unsigned int *getLineSensorValues();
+  const uint16_t *getLineSensorValues();
 
   /**
    * @returns position value based on current line sensors

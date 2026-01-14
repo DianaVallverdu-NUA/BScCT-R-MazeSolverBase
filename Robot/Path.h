@@ -2,6 +2,8 @@
 #define ROBOT_PATH_H
 
 #include "Decision.h"
+#include <Pololu3piPlus32U4.h>
+
 
 /**
  * A path of decisions that the robot has taken.
@@ -10,10 +12,12 @@
 class Path
 {
 private:
+  // ============================ VARIABLES ============================
+
   /**
    * Maximum length of the path - necessary when working with Arduino.
    */
-  static const int MAX_LEN = 64;
+  static const uint8_t MAX_LEN = 64;
 
   /**
    * Array of decisions taken by the robot.
@@ -24,7 +28,9 @@ private:
    * Current length of the path.
    * Modified when adding decisions or simplifying.
    */
-  int length = 0;
+  uint8_t length = 0;
+
+  // ============================ BOOLEAN CHECKS ============================
 
   /**
    * @return true if the previous decision was BACK, false otherwise.
@@ -57,6 +63,13 @@ private:
   bool forwardBackLeft();
 
   /**
+   * @return true if the path has reached maximum length.
+   */
+  bool isFull();
+
+  // ============================ PATH SIMPLIFICATION ============================
+
+  /**
    * Replace the last three decisions with a new decision.
    * Used when simplifying.
    */
@@ -72,29 +85,29 @@ private:
   void simplify();
 
 public:
-  /**
-   * @return true if the path has reached maximum length.
-   */
-  bool memoryFull();
-
+  // ============================ PATH MODIFICATION ============================
   /**
    * Add a new decision to the path & simplify if possible.
    */
   void addDecision(DECISION d);
 
-  /**
-   * Display the path taken so far on the OLED screen.
-   */
-  void displayPath();
+  // ============================ GETTERS ============================
 
   /**
    * @return the decision at the given index in the path.
    */
-  DECISION getStep(int index);
+  DECISION getStep(uint8_t index);
 
   /**
    * @return the current length of the path.
    */
-  int getLength();
+  uint8_t getLength();
+
+  // ============================ UTILS ============================
+
+  /**
+   * Display the path taken so far on the OLED screen.
+   */
+  void displayPath();
 };
 #endif

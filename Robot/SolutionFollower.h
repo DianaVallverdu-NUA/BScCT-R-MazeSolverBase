@@ -13,7 +13,7 @@ private:
   /**
    * Number of decisions made so far.
    */
-  int count = 0;
+  uint8_t pathIndex = 0;
 
   /**
    * 1. Move forward for better re reading

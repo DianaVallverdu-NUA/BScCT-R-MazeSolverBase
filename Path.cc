@@ -1,7 +1,7 @@
 #include "Robot/Path.h"
 #include "Utils/Display.h"
 
-bool Path::memoryFull()
+bool Path::isFull()
 {
   return length >= MAX_LEN;
 }
@@ -76,7 +76,7 @@ void Path::displayPath()
 
 void Path::addDecision(DECISION d)
 {
-  if (memoryFull())
+  if (isFull())
     return;
 
   steps[length] = d;
@@ -112,14 +112,14 @@ void Path::simplify()
   }
 };
 
-DECISION Path::getStep(int index)
+DECISION Path::getStep(uint8_t index)
 {
   if (index < 0 || index >= length)
     return DECISION::NONE;
   return steps[index];
 }
 
-int Path::getLength()
+uint8_t Path::getLength()
 {
   return length;
 }

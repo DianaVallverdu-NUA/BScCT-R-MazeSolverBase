@@ -30,14 +30,14 @@ void SolutionFollower::identifyJunction()
   }
 
   // if end of path array -> FINISHED
-  if (count == path.getLength())
+  if (pathIndex == path.getLength())
   {
     state = ROBOT_STATE::FINISHED;
     return;
   }
 
   // make correct turn
-  DECISION d = path.getStep(count);
+  DECISION d = path.getStep(pathIndex);
   switch (d)
   {
   case DECISION::LEFT:
@@ -52,6 +52,6 @@ void SolutionFollower::identifyJunction()
     break;
   }
 
-  // update count for next junction
-  count++;
+  // update pathIndex for next junction
+  pathIndex++;
 }

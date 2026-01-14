@@ -1,14 +1,42 @@
 #include "Robot/MazeSolver.h"
 #include "Robot/LineSensorsManager.h"
 
-bool MazeSolver::finished()
+// ============================ ROBOT MOVEMENT ============================
+
+void MazeSolver::turnLeft()
 {
-  if (state == ROBOT_STATE::FINISHED)
-  {
-    return true;
-  }
-  return false;
+  // move forward to center robot on line.
+  moveForwardFor(FORWARD_BEFORE_TURNING_DELAY);
+
+  // turn left until
+  turnLeftFor(TURN_90_DEGREES_DELAY);
+
+  // go back to following line
+  state = ROBOT_STATE::FOLLOWING_LINE;
 }
+
+void MazeSolver::turnRight()
+{
+  // move forward to center robot on line.
+  moveForwardFor(FORWARD_BEFORE_TURNING_DELAY);
+
+  // turn right -> delay found empirically.
+  turnRightFor(TURN_90_DEGREES_DELAY);
+
+  // go back to following line
+  state = ROBOT_STATE::FOLLOWING_LINE;
+}
+
+void MazeSolver::makeUTurn()
+{
+  // turn on itself (180 degrees)
+  turnLeftFor(TURN_90_DEGREES_DELAY * 2);
+
+  // go back to following line
+  state = ROBOT_STATE::FOLLOWING_LINE;
+}
+
+// ============================ UTILS ============================
 
 void MazeSolver::identifyJunction()
 {
@@ -63,39 +91,6 @@ void MazeSolver::identifyJunction()
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
-void MazeSolver::turnLeft()
-{
-  // move forward to center robot on line.
-  moveForwardFor(FORWARD_BEFORE_TURNING_DELAY);
-
-  // turn left until
-  turnLeftFor(TURN_90_DEGREES_DELAY);
-
-  // go back to following line
-  state = ROBOT_STATE::FOLLOWING_LINE;
-}
-
-void MazeSolver::turnRight()
-{
-  // move forward to center robot on line.
-  moveForwardFor(FORWARD_BEFORE_TURNING_DELAY);
-
-  // turn right -> delay found empirically.
-  turnRightFor(TURN_90_DEGREES_DELAY);
-
-  // go back to following line
-  state = ROBOT_STATE::FOLLOWING_LINE;
-}
-
-void MazeSolver::makeUTurn()
-{
-  // turn on itself (180 degrees)
-  turnLeftFor(TURN_90_DEGREES_DELAY * 2);
-
-  // go back to following line
-  state = ROBOT_STATE::FOLLOWING_LINE;
-}
-
 bool MazeSolver::isSimpleRight()
 {
   // ensure you CAN turn right
@@ -125,10 +120,10 @@ bool MazeSolver::isSimpleLeft()
   return true;
 }
 
-void MazeSolver::checkForStateChange()
+void MazeSolver::detectJunctionOrDeadEnd()
 {
   // if potential junction detected -> change state to identify
-  if (lineSensors.areAnySensorsAbove(STRONG_BLACK_THRESHOLD))
+  if (lineSensors.areAnySideSensorsAbove(STRONG_BLACK_THRESHOLD))
   {
     state = ROBOT_STATE::IDENTIFYING_JUNCTION;
     motors.setSpeeds(0, 0);
@@ -145,6 +140,17 @@ void MazeSolver::checkForStateChange()
   }
 }
 
+// ============================ PUBLIC FUNCTIONS ============================
+
+bool MazeSolver::isFinished()
+{
+  if (state == ROBOT_STATE::FINISHED)
+  {
+    return true;
+  }
+  return false;
+}
+
 void MazeSolver::loop()
 {
   // check current state and call function accordingly
@@ -152,7 +158,7 @@ void MazeSolver::loop()
   {
   case ROBOT_STATE::FOLLOWING_LINE:
     followLine();
-    checkForStateChange(); // when following line also check for state changes
+    detectJunctionOrDeadEnd(); // when following line also check for state changes
     break;
   case ROBOT_STATE::IDENTIFYING_JUNCTION:
     identifyJunction();
@@ -178,5 +184,6 @@ void MazeSolver::loop()
   }
 }
 
-// declare static variables so they can be used later on
+// ============================ STATIC VARIABLES ============================
+// If static variables are not explicitly declared outside of the .h file the cannot be used
 Path MazeSolver::path{};

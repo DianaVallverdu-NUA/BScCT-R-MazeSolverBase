@@ -23,7 +23,7 @@ void setup()
     ;
 
   // calibrate sensors -> done statically for all inherited classes
-  mazeSolver.calibrateSensors();
+  LineFollower::calibrateSensors();
 
   // show sensor readings until button B is pressed
   display.showReadings();
@@ -36,12 +36,12 @@ void setup()
 void loop()
 {
   // if maze solver not finished -> keep solving maze
-  if (!mazeSolver.finished())
+  if (!mazeSolver.isFinished())
   {
     mazeSolver.loop();
 
     // if maze solver finished in THIS LOOP -> wait for be press
-    if (mazeSolver.finished())
+    if (mazeSolver.isFinished())
     {
 
       // display finished message on line two

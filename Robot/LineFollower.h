@@ -5,17 +5,13 @@
 
 using namespace Pololu3piPlus32U4;
 
-constexpr int NUM_SENSORS = 5;
+constexpr uint8_t NUM_SENSORS = 5;
 
 class LineFollower
 {
 
 protected:
-  /**
-   * Follow line using a PD controller.
-   */
-  void followLine();
-
+  // ============================ SHARED VARIABLES ============================
   /**
    * Motors object for controlling robot movement.
    */
@@ -23,7 +19,7 @@ protected:
   /**
    * Error from last call to followLine (for derivative term).
    */
-  static int lastError;
+  static uint16_t lastError;
 
   /**
    * Max speed allowed for the motors - absolute max is 400.
@@ -55,6 +51,7 @@ protected:
    */
   static const uint16_t derivative = 256;
 
+  // ============================ MOTOR PRIMITIVES ============================
   /**
    * Move forward for a specified number of milliseconds.
    */
@@ -72,12 +69,17 @@ protected:
    */
   void turnRightFor(uint16_t ms);
 
-public:
+  /**
+   * Follow line using a PD controller.
+   */
+  void followLine();
 
+public:
   /**
    * Calibrate the line sensors.
+   * This function only needs to be run once at setup as it will calibrate the sensors for all solvers.
    */
-  void calibrateSensors();
+  static void calibrateSensors();
 
   /**
    * Main loop function to be called repeatedly.
