@@ -1,6 +1,7 @@
 #include "Utils/Display.h"
 #include "Utils/Buttons.h"
 #include "Robot/LineFollower.h"
+#include "Robot/LineSensorManager.h"
 
 DisplayManager::DisplayManager()
 {
@@ -44,7 +45,10 @@ void DisplayManager::showReadings()
 
   while (!buttonB.getSingleDebouncedPress())
   {
-    uint16_t position = LineFollower::lineSensors.readLineBlack(LineFollower::lineSensorValues);
+    
+    uint16_t position = lineSensors.getPosition();
+    
+    const unsigned int* lineSensorValues = lineSensors.getLineSensorValues();
 
     gotoXY(0, 0);
     print(position);
@@ -52,7 +56,7 @@ void DisplayManager::showReadings()
     gotoXY(0, 1);
     for (uint8_t i = 0; i < NUM_SENSORS; i++)
     {
-      uint8_t barHeight = map(LineFollower::lineSensorValues[i], 0, 1000, 0, 8);
+      uint8_t barHeight = map(lineSensorValues[i], 0, 1000, 0, 8);
       printBar(barHeight);
     }
 

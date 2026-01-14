@@ -1,9 +1,8 @@
 #include "Robot/LineFollower.h"
 #include "Utils/Display.h"
+#include "Robot/LineSensorManager.h"
 
 // Allocate storage for static members
-LineSensors LineFollower::lineSensors;
-uint16_t LineFollower::lineSensorValues[5];
 int LineFollower::lastError = 0;
 Motors LineFollower::motors;
 
@@ -64,7 +63,7 @@ void LineFollower::loop()
 void LineFollower::followLine()
 {
   // get position & error
-  int16_t position = lineSensors.readLineBlack(lineSensorValues);
+  int16_t position = lineSensors.getPosition();
   int16_t error = position - 2000;
 
   // calculate speed difference with PID formula

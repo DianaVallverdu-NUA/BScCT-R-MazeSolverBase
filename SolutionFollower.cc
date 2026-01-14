@@ -1,29 +1,29 @@
 #include "Robot/SolutionFollower.h"
-#include "Robot/Detector.h"
+#include "Robot/LineSensorManager.h"
 
 void SolutionFollower::identifyJunction()
 {
 
   // move forward for better sensor reading
   delay(500);
-  moveForwardFor(250);
+  moveForwardFor(IDENTIFY_JUNCTION_DELAY);
 
   // if end of maze detected return
-  if (Detector::endOfMazeReached())
+  if (lineSensors.areAllSensorsAbove(STRONG_BLACK_THRESHOLD))
   {
     state = ROBOT_STATE::FINISHED;
     return;
   }
 
-  // case simple left -> don't follow decisions vector
-  if (Detector::isSimpleLeft())
+  // case simple left -> don't check decisions vector
+  if (isSimpleLeft())
   {
     state = ROBOT_STATE::TURNING_LEFT;
     return;
   }
 
-  // case simple right -> don't follow decisions vector
-  if (Detector::isSimpleRight())
+  // case simple right -> don't check decisions vector
+  if (isSimpleRight())
   {
     state = ROBOT_STATE::TURNING_RIGHT;
     return;
@@ -47,7 +47,7 @@ void SolutionFollower::identifyJunction()
     state = ROBOT_STATE::TURNING_RIGHT;
     break;
   case DECISION::FORWARD:
-    moveForwardFor(100);
+    moveForwardFor(AFTER_JUNCTION_FORWARD_DELAY);
     state = ROBOT_STATE::FOLLOWING_LINE;
     break;
   }

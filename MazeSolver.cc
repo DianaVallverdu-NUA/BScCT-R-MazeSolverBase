@@ -1,5 +1,5 @@
 #include "Robot/MazeSolver.h"
-#include "Robot/Detector.h"
+#include "Robot/LineSensorManager.h"
 
 bool MazeSolver::finished()
 {
@@ -14,22 +14,22 @@ void MazeSolver::identifyJunction()
 {
   // move forward so robot can check better type of junction
   delay(500);
-  moveForwardFor(250);
+  moveForwardFor(IDENTIFY_JUNCTION_DELAY);
 
   // if can sense everywhere -> FINISHED
-  if (Detector::endOfMazeReached())
+  if (lineSensors.areAllSensorsAbove(STRONG_BLACK_THRESHOLD))
   {
     state = ROBOT_STATE::FINISHED;
     return;
   }
 
   // if there's a left take it
-  if (Detector::canTurnLeft())
+  if (lineSensors.isLeftmostAbove(BLACK_THRESHOLD))
   {
     state = ROBOT_STATE::TURNING_LEFT;
 
-    // only add as decision if it's not a simple left
-    if (!Detector::isSimpleLeft())
+    // It is only a decision if it is not a simple left
+    if (!isSimpleLeft())
     {
       path.addDecision(DECISION::LEFT);
       path.displayPath();
@@ -38,10 +38,10 @@ void MazeSolver::identifyJunction()
   }
 
   // if can go forward -> go forward
-  if (Detector::canGoForward())
+  if (lineSensors.isMiddleAbove(BLACK_THRESHOLD))
   {
     // move forward to avoid redetecting junction
-    moveForwardFor(100);
+    moveForwardFor(AFTER_JUNCTION_FORWARD_DELAY);
 
     // change state & add decision
     state = ROBOT_STATE::FOLLOWING_LINE;
@@ -52,24 +52,24 @@ void MazeSolver::identifyJunction()
 
   // if there's a right take it but don't record as decision
   // as it means no other option was available
-  if (Detector::isSimpleRight())
+  if (lineSensors.isRightmostAbove(BLACK_THRESHOLD))
   {
     state = ROBOT_STATE::TURNING_RIGHT;
     return;
   }
 
   // any other case -> keep going there might have been a misdetection
-  moveForwardFor(50);
+  moveForwardFor(AFTER_JUNCTION_FORWARD_DELAY);
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
 void MazeSolver::turnLeft()
 {
   // move forward to center robot on line.
-  moveForwardFor(250);
+  moveForwardFor(FORWARD_BEFORE_TURNING_DELAY);
 
-  // turn left -> delay found empirically.
-  turnLeftFor(730);
+  // turn left until
+  turnLeftFor(TURN_90_DEGREES_DELAY);
 
   // go back to following line
   state = ROBOT_STATE::FOLLOWING_LINE;
@@ -78,10 +78,10 @@ void MazeSolver::turnLeft()
 void MazeSolver::turnRight()
 {
   // move forward to center robot on line.
-  moveForwardFor(250);
+  moveForwardFor(FORWARD_BEFORE_TURNING_DELAY);
 
   // turn right -> delay found empirically.
-  turnRightFor(730);
+  turnRightFor(TURN_90_DEGREES_DELAY);
 
   // go back to following line
   state = ROBOT_STATE::FOLLOWING_LINE;
@@ -89,17 +89,46 @@ void MazeSolver::turnRight()
 
 void MazeSolver::makeUTurn()
 {
-  // turn on itself for 1450 ms -> delay found empirically.
-  turnLeftFor(1450);
+  // turn on itself (180 degrees)
+  turnLeftFor(TURN_90_DEGREES_DELAY * 2);
 
   // go back to following line
   state = ROBOT_STATE::FOLLOWING_LINE;
 }
 
+bool MazeSolver::isSimpleRight()
+{
+  // ensure you CAN turn right
+  if (!lineSensors.isRightmostAbove(BLACK_THRESHOLD))
+    return false;
+
+  // ensure you CANNOT turn left or go forward
+  if (lineSensors.isMiddleAbove(BLACK_THRESHOLD))
+    return false;
+  if (lineSensors.isLeftmostAbove(BLACK_THRESHOLD))
+    return false;
+  return true;
+}
+
+bool MazeSolver::isSimpleLeft()
+{
+
+  // ensure you CAN turn left
+  if (!lineSensors.isLeftmostAbove(BLACK_THRESHOLD))
+    return false;
+
+  // ensure you CANNOT turn right or go forward
+  if (lineSensors.isMiddleAbove(BLACK_THRESHOLD))
+    return false;
+  if (lineSensors.isRightmostAbove(BLACK_THRESHOLD))
+    return false;
+  return true;
+}
+
 void MazeSolver::checkForStateChange()
 {
   // if potential junction detected -> change state to identify
-  if (Detector::possibleJunction())
+  if (lineSensors.areAnySensorsAbove(STRONG_BLACK_THRESHOLD))
   {
     state = ROBOT_STATE::IDENTIFYING_JUNCTION;
     motors.setSpeeds(0, 0);
@@ -107,7 +136,7 @@ void MazeSolver::checkForStateChange()
   }
 
   // if dead end detected -> change state to turn back
-  if (Detector::reachedDeadEnd())
+  if (!lineSensors.isMiddleAbove(WHITE_THRESHOLD))
   {
     state = ROBOT_STATE::TURNING_BACK;
     path.addDecision(DECISION::BACK);

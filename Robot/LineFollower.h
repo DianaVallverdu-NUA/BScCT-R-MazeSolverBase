@@ -73,17 +73,6 @@ protected:
   void turnRightFor(uint16_t ms);
 
 public:
-  /**
-   * Line sensors object for reading line sensor values.
-   * Since it changes at every read, it has been left at public & static for all classes to use.
-   */
-  static LineSensors lineSensors;
-
-  /**
-   * Array to hold the line sensor readings.
-   * Since it changes at every read, it has been left at public & static for all classes to use.
-   */
-  static unsigned int lineSensorValues[NUM_SENSORS];
 
   /**
    * Calibrate the line sensors.
