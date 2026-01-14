@@ -1,6 +1,6 @@
 #include "Robot/LineFollower.h"
 #include "Utils/Display.h"
-#include "Robot/LineSensorManager.h"
+#include "Robot/LineSensorsManager.h"
 
 // Allocate storage for static members
 int LineFollower::lastError = 0;

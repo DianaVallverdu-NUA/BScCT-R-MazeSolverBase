@@ -1,5 +1,5 @@
 #include "Robot/MazeSolver.h"
-#include "Robot/LineSensorManager.h"
+#include "Robot/LineSensorsManager.h"
 
 bool MazeSolver::finished()
 {
@@ -178,4 +178,5 @@ void MazeSolver::loop()
   }
 }
 
+// declare static variables so they can be used later on
 Path MazeSolver::path{};

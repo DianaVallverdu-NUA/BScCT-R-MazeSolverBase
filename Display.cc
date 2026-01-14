@@ -1,7 +1,7 @@
 #include "Utils/Display.h"
 #include "Utils/Buttons.h"
 #include "Robot/LineFollower.h"
-#include "Robot/LineSensorManager.h"
+#include "Robot/LineSensorsManager.h"
 
 DisplayManager::DisplayManager()
 {

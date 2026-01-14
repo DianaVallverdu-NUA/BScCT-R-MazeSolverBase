@@ -5,7 +5,7 @@
 #include "State.h"
 #include "Path.h"
 #include "LineFollower.h"
-#include "LineSensorManager.h"
+#include "LineSensorsManager.h"
 
 class MazeSolver : public LineFollower
 {

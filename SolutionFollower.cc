@@ -1,5 +1,5 @@
 #include "Robot/SolutionFollower.h"
-#include "Robot/LineSensorManager.h"
+#include "Robot/LineSensorsManager.h"
 
 void SolutionFollower::identifyJunction()
 {
