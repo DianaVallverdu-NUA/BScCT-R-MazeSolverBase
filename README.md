@@ -175,8 +175,8 @@ void MazeSolver::turnLeft()
   // turn left until
   turnLeftFor(TURN_90_DEGREES_DELAY);
 
-  // go back to following line
-  state = ROBOT_STATE::FOLLOWING_LINE;
+  // use fake end here to debug
+  state = ROBOT_STATE::FAKE_END;
 }
 ```
 
